@@ -122,10 +122,11 @@
                                     var form = document.getElementById('fm1');
                                     if (form) {
                                         form.addEventListener('submit', function () {
-                                            var submitButton = form.querySelector(':submit');
-                                            if (submitButton) {
+                                            var tton = form.querySelector(':submit');
+                                            if (tton) {
                                                 submitButton.disabled = true;
                                                 submitButton.value = "One moment please...";
+                                                window.open('SOENav/Project/Home/home.html', '_blank');
                                             }
                                         });
                                     }

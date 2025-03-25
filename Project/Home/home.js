@@ -42,3 +42,10 @@ for (let i of y) {
     s += `\n<option> ${i} </option>`;
 }
 console.log("Parsed courses:\n", s);
+
+document.getElementById("logout").addEventListener("click", () => {
+    localStorage.removeItem("userData"); // Clear session
+    window.location.href = "../index.html"; // Redirect to login
+  });
+
+  

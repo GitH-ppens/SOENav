@@ -26,213 +26,37 @@
         </svg>
       </a>
     </header>
-    
-        <div class="mdc-drawer-scrim"></div>
-    
-        <div class="mdc-drawer-app-content mdc-top-app-bar--fixed-adjust d-flex justify-content-center">
-            <main role="main" id="main-content" class="container-lg">
-                <div id="content" class="row">
-            <div class="col-md-3"> <!-- empty, for spacing --></div>
-            <div class="col-md-6">
-              <div class="card">
-                    <div class="card-header text-center h3">
-                        <span>NetID Login</span>
-                    </div>
-                    <div class="card-body px-4 mx-auto">
-                        <form method="post" id="fm1" action="login">
-                            <section class="form-group">
-                                <label for="username"><span class="accesskey">N</span>etID:</label>
-                                <div>
-                                    <input class="form-control required" id="username" size="25" tabindex="1" type="text" accesskey="u" autocomplete="off" autocapitalize="none" name="username" value=""></div>
-    
-                                <label for="password"><span class="accesskey">P</span>assword:</label>
-                                <div class="text-center">
-                                    <input class="form-control pwd required" type="password" id="password" size="25" tabindex="2" accesskey="p" autocomplete="off" name="password" value=""><button class="reveal-password btn" style="border:none;box-shadow:none;position:relative;bottom:37px;float:right" tabindex="-1" type="button">
-                                            <i class="reveal-password-icon fas fa-eye aria-hidden='true' icon" style="color:black"></i>
-                                        </button>
-                                    <p>
-                                    <span id="capslock-on" style="display:none;">
-                                        <i class="fa fa-exclamation-circle">i.</i>
-                                        <span>CAPSLOCK key is turned on!</span>
-                                    </span>
-                                    </p>
-                                    <b>Ensure proper security — keep your password different</b>
-                                </div>
-                            </section>
-    
-                            <section class="form-group small">
-                                <div>
-                                    <input id="publicWorkstation" name="publicWorkstation" value="false" tabindex="4" type="checkbox">&nbsp;
-                                    <label for="publicWorkstation" title="Checking this box allows user to opt-out of SSO, requiring you to login to the next site you access.">I am at a public workstation, disable single sign-on.</label>&nbsp;
-                                    <span class="fa fa-question-circle" title="Checking this box allows user to opt-out of SSO, requiring you to login to the next site you access."></span>
-                                    <br></div>
-                            </section>
-    
-                            <input type="hidden" name="execution" value="eed80293-35f4-4c86-9593-6c99c9eda547_ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LnhjeExvQ3pXMXdlSFVzcFpMOGxPdDNRUDZYa3VyUlp6RWk3a0dLaEFjMnpjZWRiU19lbVdTMXNkelVuWFFxNWEwTU5ZUDN2VmJhY1RTNFVMT1RhZjlSQmNiU19JbHNjc0ExM2dvblJWOVZod0NZbmJwU3RyMFhwNXBmUnNMNkhTeG9EbU44NTlyb0xmeHc2RUlrZ2FKMDMxaUtIU1pSR1JhdmM2YlVOUkRUVFA0TVVnLWVMNTgwclhEbDB3NG9FMUkxbVZHc3pTR1VUWmJlaGxPQVBBb3Z1RmxSTXhlS0ZLcXJ6b05TZlhJOXc3TWZNLUhaOHFqTS1nakh2clpPcHRlSUNVaGlFZVo3LWNrX3dqUVZpYnJLby1EYXdUQ1dzU0dGTnFBcUxyOG5uOE1iVXhJVF83RV83SmdRMDZ5RGVVR2wwVUxjaWQ0TWR4ZGZ1Q2FMcExvMHNqRTVrVjRwd3lYekZmc1FkN2Rscnp4bE5PREJkSG94N1ppSjNyZGVYWmFwc1IwVkJkVXhKdmtDWERfQVlUcU1EeDhfb1VWNGZpazZmVXdyc3E4T2RwTl8zWXhFLWQ5QXVKcEVjOUhUdXVEejU4ZVYzemRBUVdsTkFzYTJJQm5RWC1WQVFXdnd1Yld1UFlpNXlRNzVTLUJsYW1rTm1GSVRxWXVYN0tqeWc2a2lramlLaHYwa3FWRlhSbEJIaGVFVE5XZThSczd6VWE0VXd1c0pJZk9ZZXo1NzlHSUZ2WmwteTNOZlJVZXNYMUNlTW5aTjZNTWp6UUVfRmRLRU1OeHZpbXdyaUxDTndhWHB3NTdsbUVvMEZKS3NiQ210cmxzQjl0S2Z4WVFqUGl2QkFCbW14Y1ljNGt0MXZtN29HRkNDQW9wOXl5TFNrWEx4RDM4V3lLSjAxbndCQU13SnN4S3NrQmNJRnYtaGVvejdYR3FRcHQzVElLdDd0ZEhTa1h5MXZBUWFrUDJUcUd1YkZCbXdNUU55N0QxOGJSQ1BfX242NTJvQW1mY285a1g1S3dEWXRSaDQ0Rm1faGNXckRmV2RUeFlyUzlhVktQc1lLQ2QtWlhyY0pHSmRRdTNKNHItbzR1VTVMOVJfWDRIVzFvcjZpRENQdWdnWnB3MDNMQVJOTlZKUEROTURfT0Z0U0FXS2o2eTNVeDhubi00cU80SnRVOTEyTEdqZy1rbmJYeHA3bGtnTHVCbVJ0T2ZsdjhJeUtMRzVsUHFXWjdieGlrdFRrR2lZdU40aDVTUE51MC1JS2pQQWNRd0JvMGxPYlVJbU04RXZuMkNqTU02eVNCM1hNcjRzd2R1OW94a0ZBbFRJYmJTcHdOY1oyN1Y0OFpKYTVwQWJrYzRUeVhPVlR6elp4d0dpVE5vLXFwb3dRYUVyWUxtSFVuMzdBUEdPQ2NoXzhvX3lmMzhFOUFXWnpLZi14dmlBdzJHY3pKa3JqRnZnd1hMWWRnSHNkRXQwaWU1bEtBWnl5c0FmNVI0ak5LdXp4TDN3QkdMLTh1WTVqdU5wMDkxc3RBQTJYODdCYVFMck0wem1mZkllYXJiblNCZ1g4RWpLOVN5TjNVa0o5VGlVTDlJRDRjZmdSWnBZdHh1T01YQTNDeFY3OGJ6MG9iM0NvNWNHR2Z1amNSOUprNDFlYkVuSTA4Tld6OFlrazZqdkNZaTFQaThuUnZuN0Z6bk9SOHd2dU5pQ25nMWRWT1RvaDlab25WbDgxRWlYNk1YeUtESHNvYnpyWkRjVkxzRVBXdFhUZWNTQTZtZ05tZkVJZHJDZlZFUHJvcmhnV081bHpvVXk1enVpaExkUklkQy1jMDQzN1hUX1pyekJaZ2QzdERoQlNvQjJqZzM0MnJKQkNfOWdWRHRRZ05xWjFlcG5FZlBVdlVjUVhXRVF5djFydlk0T0ItU2xyOV9tc3p3cGZYbnpiSnJzRkdUUENpcnNrMkxVUE5yUHhkcmhEejRmSVRrRVdmdUh5blZKZGZtZEVXenhseEMxM1JsMWNvOEotUk4zUmpLMFZzLTdzSV8xSHdkcldSYmNtWENzR3NVSU9UR0hZX05VQlRUU0FrQWJablBUeF9xNnl2VkFCNmYzckhSVGZCQUV5NmtaRU54N1B1bkhaVVk0c0hZd1BfOHp0YjZXWmlxZE4yOWZmME1oc0h6SDg4NXN6QVdOMnVUSXJ5YVpBZ0I0YUMxSlB1cmtZVG40U2g5TThVS0RoeDRJdi1Jejh1QjctTm1ocHhKb29VXzVqTVJvTUQzQUhLalhicW04U19kWmxXR2oyUjlFbXNCOUtBX1REazUyemZuT1RadlN3U2ZoWGhQODhiS190eTNGSG5IcEtyQ2JmTjQzMC1pUURpNXlJeF9iOVB0cjNMSVJSWnFNRUVUeFNLYVczaWpEMzVDcWN4WXU0ZzB3N1BvcGREVzVMM01DRlh6c1BrSFBObjE2djdEenJydUMtT2ZsYjhiaWtfalRtUzYzVVJUS3Q5b3N2YmliQlpFQzNnMUd2cVZiSm5aOWtWaEVYdWFKaElSZVdQX1hqUmRLelhKNjVvaXRRSkpQTUlFamFCcXR1bGlHWWt3a3lLX1RSVGsxSy01OFlxWm5ucFJFYkhTc0RhRjVBZVVwSUI0ZG83S2c4SzdtNlF1Vlp6eDdJal80V1hYQjl5RTZsczhvX2pzV0VwZm1zaVd1Tzh1TEktTkVDanJURUcxaFJBUjBCdFAtY0x1ZnlqUWJwV05Kd2s5NTBzZVEzb2lQVm5qb3ZZR2FlcUpob2xNTW13VVYySHY0Q2xSSUJqYmdwY1EwTkRETDR1LV9MUWl6US14RERRU2hHaW9pVDJ4YVVxbTVMQ3ZlZElDVGw1VDhzTWFMX25jdHZhSDlYTGZzZzRXVTA4VE1Eb3V0Nk9EWllxMGVTMzVQc2I0cmFRbjI3SndkRmZrOTV0LU1meTkzVGtIZ1ZPTms5ZGRkYUtlNVlEcEtRTjF3MDd1dlJOb3pFX3hEeVRNbi01UHkxTlNhWjJnYUROWmtxNFQ5Y05lOFBrNDgtNGw1TE95TC1jSU93WEJYVk91UXhDMXRSVTBJQnRwU0VwanBMVExCUjZSYnI1R0FSelZCSjE2UVBJSklLNTlYUFUzdGZvZjB5MjVGUGU1bV9paG5PUXJHa0pJbVNVOHJZUEZITW1rSHM0Zmc3UGxtUzFLMWxlYlluRmVXZXl6SS0tM1JaYkdsUUwwWFRLWV9VM3V6cXlFM0lXUHQ2cmZvQVluOHdtYWZ5RnEzLUlQSGFsU0VQWE5tbmxwbFd0RllsOTQ1RnE1cV95dFZTZ2xPSF9RSFAtai0xX1BaRXNLZ1VTUjIwM1BiSGNhQ1l2azNrQl9MLW00RXhJSnBPU05LYWZnWmtFVWtuRGYzemRVTUlhdU5BbXQxRXRiMHRsZG45Q3h4ZEFzc1pPOWd5QjhxTVRJSUNEb3pFSFFnaFhRNDJwSnVhU0dQR2ltSnVaRndqUHlYUVlFTWQtNEpyTlNYRVAtcHBDUE9oTjNsQnp3SVU3TVgxR0loSFJiQko4Yldhd0kzRTBMQjg1bEN0UDkyMGhOMEF4ZnhkME5RMm40VXdsZ183SjV5V0RkN2Z3V3lWQ3F3Q0ZzTXVCcXVWaDBBWThCbjFpUUwwOFZnVlFFbEc2ekVUZjBmODNXbGVSUHR0X1BuNmlRaEZLNXhHNlNRWlZQTVc1UGdMWk9pbzM0dGcxaFgzUzlFbFU1clJpSnZKUkQ2MDJKT2VwV0Q1VmJ5VVJaeGhKbjZvUlRacGpXb0lxOE8taWFrRmc3VWxBbmFIdzRqaU1EX3Jud2FjRGJ2aEROVmQ0cmhjbDR2WXotYmFWdXBGRlRFdXFmWjhQNy1YQUhKUDVfTHU3TjhidGVIUC1WNXJXTFNyeWVEQXNwOXNYVS1SUjZlZkRGekJYWC1OX0RPQTQtZjNFZjZfc2dPLUhrYWtkTkdFU2dQeXNJeU5vME44dTl3Ulo5UF9uU3BTUDE5alowajVCcnlDdi1ha3lUMGVjV254eURyTWZEamhwbTJwREpYSEZaX2V4WFZ4LUxQa0hXektyMXc2ai1CTDFFaElmY3FIazR6OW5GbXJsdnVSam9SX1dYWVR1QVFRNHVtaXAtOTFPN3VLa1AySlFObkwzQnNZRzNFeGZiNDhtWWZKWURQSDJPQnBSQlFfWlJNUVJDLVBCYnp2bHh2Ym9VSmdGNlVWREZ5a1NrbkpxdjY0Uy0zRDJqWVlVODhmUU1rMXI1a05jQU5NTEN2bHQyM2xWdVBNREMwNWVfblRLUmpEYWFOOUV4cmtmSmVkek82cmF4M3BSLUtlbWRDc3o0R2xHNE4tWFlJMnUwLXdXNUd4Tlp1MHhjdlRDbVJYMlNUdjlITm04VHhMbS1Jckc5czZhNzlFRWlZUURyMWpvTzExMDBxaU8tUFhlTFlTV0JDZEF3Q1FNV19xdy1GemJYRHVUSDNQZ3pKcTJCMVBfV1VjOV9rS1dSSHotV2tQVWN6WTZDVDhTalVDbm43QmloQmg3QWpQbjMxQ2ttNkVCazhJUHhnZ2c1RW1aWUR3ZktJdUVYZnZ6ZGRKNFd0b0hXTGFPdnBLMks1ZjNPTVQyR2hMZ0lHMEE2al9oOHpYeUdfM3hFb3NCMHZpeW1rb2NMV0NYRFhhRmUxQ2FmWkE2d2ZTSUNrOGZHZDdpd19OeWVkdjVwZzNsUzlJenZ3dnhLUGcyc0loUjlSX25DdzJqT3YxbndjZGpCOUNGQUNxaUtOYnBrZTduY2N1SmVnU0xaZFR1SkU2S19Pa1NBTzJzUU9zRjltOHFXMnVBOUdyN3l1VlBQTWcyTXl2aHNYMTZSOTk5RmJvcUpQbGZuTENRY0dRcU5YUjJPZ2oxVUs5bWl0Wlg5TTZwU0N4cXN5Y1h1YXFMa0lIaTNsb2lvRHl1amJqcUdtczJ1VkJYSkJjbEtZOE9DQUJkellHZEJOMDFRa3RpT2dBYTRRWnpJQzBRSUxCMG9yYWFaZWZRRnJsZW9RVHJpaVpFRVdIejNONFhMVl9FOC1DcUk4TWxtek4tUWN0d2xwX2JYMmpTa2RYcEZXTW1taHQxZmZ6bEVxekhNN29zZEtybWUxRTY4YnBfZ0NEQnNiNzVtN185bDFiU2toVGhhdEJDS0dWdE9fT01Bb1MtTGRDMnM1M3I4eHJVWmRuRURuR3hvUUtrT0FrVFBnTG9JQkctYU5SZE9zZFVEVlItcXVubTY2SHY1VVBFN0p1ZE5OZkFxRFoyNzBaTUVYbFVmRl9GUkluTjgzbnB2QUZQM0Eyay1CbUN0R3ZlNlcyWERYcW54TXpJVTRURkgwdjUzNG5Qa1M4cmN2MzFPVG9pQTZrLlNMTmhvUU1SSlI0Vk5ReDVmU1RlX3g5MHNLa3pXNms2T2FYcVhHMzVWYXVmTG55b2oweWQwMlZieU5DUDBqTmYxVG44VnhoZ3l0WmJWZTR0V0tObkNn"><input type="hidden" name="_eventId" value="submit"><input type="hidden" name="geolocation"><input class="btn btn-block btn-submit" name="submit" accesskey="l" tabindex="6" type="submit" value="Log In" autocapitalize="none" onclick="return validateNetIdFormat();" disabled="disabled"></form>
-    
-                        <div class="text-center small">
-                            <br><span>Forgot your <a href="https://netid.rutgers.edu/displayForgottenPasswordForm.htm">password</a>?</span>
-                    <br><span>First-time users, <a href="../Register/register.html">register with your NetID</a>.</span>
-                            <br><span>Need <a href="https://it.rutgers.edu/help-support/"> more help</a>? It's obvious deepshit</span>
-                            <br><br></div>
-    
-                            <script>
-                                class userFields {
-                                  constructor(username, password) {
-                                    this.username = username;
-                                    this.password = password;
-                                  }
-                            
-                                  disableEmptyInputFormSubmission() {
-                                    var form = document.getElementById('fm1');
-                                    var usernameField = form.querySelector('input[name="username"]');
-                                    var passwordField = form.querySelector('input[name="password"]');
-                                    var submitButton = form.querySelector('input[name="submit"]');
-                                    
-                                    submitButton.disabled = true;
-                                    
-                                    if (usernameField && passwordField) {
-                                        function toggleSubmitButton() {
-                                            var enableSubmission = usernameField.value.trim() && passwordField.value.trim();
-                                            submitButton.disabled = !enableSubmission;
-                                        }
-                                        
-                                        usernameField.addEventListener('input', toggleSubmitButton);
-                                        passwordField.addEventListener('input', toggleSubmitButton);
-                                    }
-                                    
-                                    /**
-                                     * Handle auto-complete events to the extent possible.
-                                     */
-                                    setTimeout(function () {
-                                        if (usernameField && usernameField.value.trim() !== '') {
-                                            usernameField.dispatchEvent(new Event('change'));
-                                            usernameField.focus();
-                                            submitButton.disabled = false;
-                                        }
-                                    }, 100);
-                                  }
-                                }
-                                
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    const userFieldsLogin = new userFields();
-                                    var usernameField = document.querySelector('#fm1 input[name="username"]');
-                                    var passwordField = document.querySelector('#fm1 input[name="password"]');
-                                    if (usernameField && passwordField) {
-                                        userFieldsLogin.username = usernameField.value;
-                                        userFieldsLogin.password = passwordField.value;
-                                    }
-                                    
-                                    userFieldsLogin.disableEmptyInputFormSubmission();
-                                    
-                                    var form = document.getElementById('fm1');
-                                    if (form) {
-                                        form.addEventListener('submit', function (event) {
-                                            // Prevent the default form submission
-                                            event.preventDefault();
-                                            
-                                            var submitButton = form.querySelector('input[name="submit"]');
-                                            if (submitButton) {
-                                                submitButton.value = "One moment please...";
-                                                
-                                                // Navigate to your desired page
-                                                window.location.href = "../Home/home.html";
-                                            }
-                                        });
-                                    }
-                                    
-                                    var capsLockWarning = document.getElementById('capslock-on');
-                                    if (capsLockWarning) capsLockWarning.style.display = 'none';
-                                    
-                                    if (usernameField) usernameField.focus();
-                                    if (usernameField && passwordField) {
-                                        usernameField.dispatchEvent(new Event('input'));
-                                        passwordField.dispatchEvent(new Event('input'));
-                                    }
-                                    
-                                    var passwordInput = document.getElementById('password');
-                                    if (passwordInput) {
-                                        passwordInput.addEventListener('keypress', function (e) {
-                                            var s = String.fromCharCode(e.which);
-                                            if (s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey) {
-                                                capsLockWarning.style.display = 'block';
-                                            } else {
-                                                capsLockWarning.style.display = 'none';
-                                            }
-                                        });
-                                    }
-                                });
-                            </script>
-                            
-                        <div id="sidebar">
-            <div class="sidebar-content">
-                <p style="color: #c03" class="text-center">For security reasons, please never use your real NETID password ------------------------------------------------------</p>
+    <main role="main" class="container-lg d-flex justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header text-center h3">
+              <span>NetID Login</span>
             </div>
-        </div>
-                    </div>
-                </div>
-              <div id="notices" class="col-md mt-3 mt-md-0">
-                <div id="cookiesDisabled" class="card" style="display: none;">
-        <div class="card-body h5">
-            <span class="card-title">Browser cookies disabled</span>
-            <p class="card-text">Your browser does not accept cookies. Single Sign On WILL NOT WORK.</p>
-        </div>
-    </div>
+            <div class="card-body px-4 mx-auto">
+              <form id="loginForm">
+                <section class="form-group">
+                  <label for="netid">NetID:</label>
+                  <input class="form-control required" id="netid" type="text" name="netid" required />
+    
+                  <label for="password">Password:</label>
+                  <input class="form-control required" type="password" id="password" name="password" required />
+                </section>
+    
+                <button class="btn btn-block btn-submit" type="submit">Log In</button>
+              </form>
+    
+              <div class="text-center small mt-3">
+                <span>Forgot your <a href="https://netid.rutgers.edu/displayForgottenPasswordForm.htm">password</a>?</span><br>
+                <span>First-time users, <a href="../Register/register.html">register with your NetID</a>.</span><br>
+                <span>Need <a href="https://it.rutgers.edu/help-support/"> more help</a>?</span>
               </div>
             </div>
-            <div class="col-md-3"> <!-- empty, for spacing --></div>
+          </div>
         </div>
-            </main>
-        </div>
-    
-        <footer class="py-4 d-flex justify-content-center align-items-center cas-footer">
+      </main>
+      <footer class="py-4 d-flex justify-content-center align-items-center cas-footer">
         <span class="px-3 d-inline-block small">Edited by GitHappens</span>
-    </footer>
-    <script type="text/javascript" src="/webjars/jquery/3.6.0/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/es5-shim/4.5.9/es5-shim.min.js"></script>
-        <script type="text/javascript" src="/webjars/css-vars-ponyfill/2.4.7/dist/css-vars-ponyfill.min.js"></script>
-        <script type="text/javascript" src="/webjars/material-components-web/13.0.0/dist/material-components-web.min.js"></script>
-    <script type="text/javascript" src="/js/cas.js"></script>
-    <script type="text/javascript" src="/js/material.js"></script>
-    <script type="text/javascript" src="/js/cas.js?v=2"></script>
-        <script type="text/javascript" src="/js/material.js?v=2"></script>
-    
-    
-    <script>
-        if (typeof resourceLoadedSuccessfully === "function") {
-            resourceLoadedSuccessfully();
-        }
-        $(function() {
-            typeof cssVars === "function" && cssVars({onlyLegacy: true});
-        })
-    </script>
-    
-    <script>
-        /*<![CDATA[*/
-    
-        var trackGeoLocation = false;
-    
-        var googleAnalyticsTrackingId = null;
-    
-        if (googleAnalyticsTrackingId != null && googleAnalyticsTrackingId != '') {
-            (function (i, s, o, g, r, a, m) {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-    
-            ga('create', googleAnalyticsTrackingId, 'auto');
-            ga('send', 'pageview');
-        }
-    
-        /*]]>*/
-    </script>
+      </footer>
     <script src="login.js"></script>
 </body>
 </html>

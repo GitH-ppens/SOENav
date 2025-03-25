@@ -1,146 +1,86 @@
-/**
- * Delete before presenting. This code was written by Opemipo for one of my former projects 
- * So, I'm just recycling code here instead of writing from scratch. If you find any private stuff, pls
- * dont..Just forget you saw it and delete it(like password, or sus variable name).
- * You can edit it as you wish, but it has the basic signing-up, and logging-in request handling.
- * I assume we'll need this if we want user-personalized degree Navigation.
- */
-
 const express = require("express");
-const bodyParser = require("body-parser");
-const crypto = require("bcrypt");//Not sure if it's needed: for encrypting password...
+const mysql = require("mysql2");
 const cors = require("cors");
-const sequel = require("mysql2");
-
+const bcrypt = require("bcrypt");
 const app = express();
-const PORT = 3000;//Port number of the server
-
+const PORT = 3000;
 const path = require("path");
+const bodyParser = require("body-parser");
 
 
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.resolve("")));
 
-app.use(cors()); // Allow requests from frontend
-app.use(express.json());
-app.use(bodyParser.json()); // Parse JSON body
-app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
-
-//global connection if needed
-const connection = sequel.createConnection({
+// ✅ DB Connection
+const db = mysql.createConnection({
   host: "bmu76n1mf2sehxodofjl-mysql.services.clever-cloud.com",
   user: "udaban8ouzufgby5",
   password: "xH67BYKcnsZq9J0vUVvO",
   database: "bmu76n1mf2sehxodofjl",
 });
 
+db.connect(err => {
+  if (err) return console.error("❌ DB connection failed:", err);
+  console.log("✅ Connected to DB");
+});
 
-// Handle form submission
+// SIGNUP
 app.post("/signup", async (req, res) => {
-  let reg = false;
-  const remote = sequel.createConnection({
-    host: "bmu76n1mf2sehxodofjl-mysql.services.clever-cloud.com",
-  user: "udaban8ouzufgby5",
-  password: "xH67BYKcnsZq9J0vUVvO",
-  database: "bmu76n1mf2sehxodofjl"
-  });
-  // Connect to the database
-  remote.connect((err) => {
-    if (err) {
-      console.error("Error connecting to the database:", err);
-      return;
-    }
-    console.log("Connected to the MySQL database!");
-  });
-  const {name, netid, email, password, matric, gradDate, currentYear, major, coursesTaken } = req.body;
-  console.log("New user:", req.body);//Also remove late...just debugging
+  const { name, netid, email, password, matric, gradDate, currentYear, major, coursesTaken } = req.body;
 
-  if (!name || !netid || !email || !password)
-    return res.status(400).json({success: false, message: "Required fields missing!" });
+  if (!name || !netid || !email || !password) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
 
   try {
-    // Hash the password before storing it
-    const saltRounds = 10;
-    const hashedPassword = await crypto.hash(password, saltRounds);
-    // Put the user into DB
-    const query = `INSERT INTO soenav_students ( name, email, netID, password, matricDate, expectedGradDate, currentSchoolYear, major, coursesTaken
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    remote.query(
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const query = `
+      INSERT INTO soenav_students
+      (name, email, netID, password, matricDate, expectedGradDate, currentSchoolYear, major, coursesTaken)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    db.query(
       query,
-      [name, email, netid, hashedPassword, matric, gradDate, currentYear, major, JSON.stringify(coursesTaken)],//*FIX!!!!
+      [name, email, netid, hashedPassword, matric, gradDate, currentYear, major, JSON.stringify(coursesTaken)],
       (err, result) => {
         if (err) {
           console.error("Error inserting user:", err);
-          return res.status(500).json({success: false, message: "Username/email already registered" });
+          return res.status(500).json({ success: false, message: "Email or NETID already exists" });
         }
-        res.status(200).json({success: true, message: "You have successfully registered" });
-        reg = true;
-        
-        // Performing a query for debugging remove later
-        remote.query("SELECT * FROM soenav_students", (err, results) => {
-        if (err) {
-          console.error("Error executing query:", err);
-          return;
-        }
-        console.log("Query results:", results);//debugging
-        });
-        remote.end();//End the connection
+        res.status(200).json({ success: true, message: "Registration successful!" });
       }
     );
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Signup error:", error);
+    res.status(500).json({ success: false, message: "Server error" })
   }
 });
 
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+// LOGIN
+app.post("/login", async (req, res) => {
+  const { netid, password } = req.body;
+  if (!netid || !password) return res.status(400).json({ message: "Missing credentials" });
 
-  if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required!" });
-  }
-  const remote = sequel.createConnection({
-    host: "bmu76n1mf2sehxodofjl-mysql.services.clever-cloud.com",
-  user: "udaban8ouzufgby5",
-  password: "xH67BYKcnsZq9J0vUVvO",
-  database: "bmu76n1mf2sehxodofjl"
+  db.query("SELECT * FROM soenav_students WHERE netID = ?", [netid], async (err, results) => {
+    if (err) return res.status(500).json({ message: "DB error" });
+    if (results.length === 0) return res.status(401).json({ message: "Invalid NetID" });
+
+    const user = results[0];
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ message: "Wrong password" });
+
+    delete user.password;
+    console.log(`${user.netID} logged in successfully`);
+    res.status(200).json(user); // ✅ sends user data
   });
+});
 
-  const query = "SELECT * FROM users WHERE email = ? OR netid = ?";
-  remote.query(query, [email, email], (err, results) => {
-      if (err) {
-          console.error("Database error:", err);
-          return res.status(500).json({ message: "Internal server error" });
-      }
 
-      if (results.length === 0) {
-          return res.status(401).json({ message: "Invalid user!" });
-      }
 
-      const user = results[0];
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
-      // Compare entered password with hashed password
-      crypto.compare(password, user.password, (err, isMatch) => {
-          if (err) {
-              console.error("Bcrypt error:", err);
-              return res.status(500).json({ message: "Authentication error" });
-          }
-
-          if (isMatch && user.confirmed) {
-              console.log(user.username + " logged in on " + new Date());//Save loggs in a file
-              res.status(200).json({ message: "Login successful!", ...user});//spread it from the user object
-          } 
-          else if(isMatch && !user.confirmed){
-              res.status(201).json({ message: "Verify your account in email!" });//change to alsways true in database
-          }
-          else{
-            res.status(401).json({ message: "Invalid password" });
-          }
-
-          remote.end();//end the connection
-      });
-  });
-}); 
-
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));

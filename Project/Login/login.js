@@ -1,30 +1,27 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Check if the user is already logged in
-    const token = localStorage.getItem("token");
-    if (token) {
-        window.location.href = "Home/home.html"; // Redirect to Dashboard
-    }
-});
+console.log("✅ login.js loaded");
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  const netid = document.getElementById("netid").value;
+  const password = document.getElementById("password").value;
 
+  try {
     const res = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ netid, password }),
     });
 
     const data = await res.json();
-
-    if (data.token) {
-        localStorage.setItem("token", data.token); // Save token
-        localStorage.setItem("userData", JSON.stringify(data.user)); // Save user info
-        window.location.href = "Home/home.html"; // Redirect to dashboard
+    if (res.ok) {
+      console.log("✅ Logged in:", data);
+      localStorage.setItem("userData", JSON.stringify(data));
+      window.location.href = "../Home/home.html";
     } else {
-        alert(data.message); // Show error message
+      alert(data.message || "Login failed");
     }
+  } catch (err) {
+    console.error("❌ Login error:", err);
+  }
 });

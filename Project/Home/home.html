@@ -65,15 +65,17 @@
     </div>
 
     <!-- My Details Section -->
+    <!-- My Details Section -->
     <div class="dn-section Details" id="details">
       <h2>My Details</h2>
+
       <p class="user-name"><strong>Name:</strong> [insert name here]</p>
-      <p id="user-netid"><strong>Rutgers ID:</strong> [insert rutgers id number here]</p>
-      <p id="user-school"><strong>School Code:</strong> 14 (School of Engineering)</p>
+      <p id="user-netid"><strong>NetID:</strong> [insert netid here]</p>
       <p id="user-grad"><strong>Year Of Graduation:</strong> [insert year here]</p>
       <p id="user-gradm"><strong>Month Of Graduation:</strong> [insert month here]</p>
-      <p id="user-netid"><strong>NetID:</strong> [insert netid here]</p>
+      <p id="user-school"><strong>School Code:</strong> 14 (School of Engineering)</p>
     </div>
+
 
     <!-- My Planned Courses (empty) -->
     <div class="dn-section plannedcourses" id="plcourses">
@@ -208,5 +210,20 @@
     }
   </script>
   <script src="home.js"></script>
+  <script>
+    // Check for login data
+    const userData = localStorage.getItem("userData");
+    console.log("Home loaded, userData:", userData);
+  
+    if (!userData) {
+      window.location.href = "../Login/login.html";
+    } else {
+      const user = JSON.parse(userData);
+      document.querySelector(".user-name").textContent = user.name;
+      document.getElementById("user-netid").textContent = `Rutgers ID: ${user.netID}`;
+      document.getElementById("user-grad").textContent = `Year Of Graduation: ${user.expectedGradDate}`;
+      document.getElementById("user-gradm").textContent = `Month Of Graduation: [Fill this in from DB if needed]`;
+    }
+  </script>  
 </body>
 </html>

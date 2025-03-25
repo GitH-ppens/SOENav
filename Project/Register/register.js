@@ -175,13 +175,32 @@ const courses = [//all engineering courses
 
 // Populate the dropdown with all courses
 function populateDropdown() {
-    const dropdownOptions = document.getElementById("dropdown-options");
-    dropdownOptions.innerHTML = courses.map(course => `
-        <label>
-            <input type="checkbox" name="courses-taken" value="${course}"> ${course}
-        </label>
-    `).join("");
+  const dropdownOptions = document.getElementById("dropdown-options");
+
+  // Only populate once (avoids removing the close button)
+  if (dropdownOptions.getAttribute("data-loaded") === "true") return;
+
+  // Add close button once
+  dropdownOptions.innerHTML = `
+      <div style="text-align: right; padding: 5px 10px;">
+          <button type="button" id="close-dropdown" style="border: none; background: none; font-size: 18px; cursor: pointer;">✖</button>
+      </div>
+      ${courses.map(course => `
+          <label>
+              <input type="checkbox" name="courses-taken" value="${course}"> ${course}
+          </label>
+      `).join("")}
+  `;
+
+  dropdownOptions.setAttribute("data-loaded", "true");
+
+  // Now attach close logic
+  const closeDropdownBtn = document.getElementById("close-dropdown");
+  closeDropdownBtn.addEventListener("click", () => {
+      dropdownOptions.classList.add("hidden");
+  });
 }
+
 
 // Filter dropdown based on search input
 function filterOptions() {
@@ -192,6 +211,7 @@ function filterOptions() {
         label.style.display = label.textContent.toLowerCase().includes(searchInput) ? "block" : "none";
     }
 }
+
 
 // Toggle dropdown visibility
 document.getElementById("search-input").addEventListener("click", () => {

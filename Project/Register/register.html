@@ -7,13 +7,14 @@
     <title>Register</title>
     <link href="Pictures/Logo/ico.png" rel="icon" type="image/png">
     <link rel="stylesheet" href="register.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
     <div class="header">
         <ul class="header-list">
-            <li class="home"><a href="">Home</a></li>
-            <li class="sourcecode"><a href="">Source-Code</a></li>
+            <li class="home"><a href="../index.html">Home</a></li>
             <li class="ode"><a href="../Login/login.html">Login</a></li>
         </ul>
         <img src="../Pictures/logo/rMath.jpg" alt="logo">
@@ -49,8 +50,12 @@
             <div class="custom-dropdown">
                 <input type="text" id="search-input" placeholder="Search courses..." oninput="filterOptions()">
                 <div id="dropdown-options" class="dropdown-options hidden">
-                  
+                    <div style="text-align: right; padding: 5px 10px;">
+                        <button type="button" id="close-dropdown" style="border: none; background: none; font-size: 18px; cursor: pointer;">✖</button>
+                    </div>
+                    <!-- Course options will be inserted here -->
                 </div>
+                
             </div>
 
             <label for="matric">Matriculation Date*</label>

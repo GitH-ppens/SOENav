@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="Pictures/Logo/ico.png" rel="icon" type="image/png">
+    <link rel="stylesheet" href="register.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="header">
+        <ul class="header-list">
+            <li class="home"><a href="../index.html">Home</a></li>
+            <li class="ode"><a href="../Login/login.html">Login</a></li>
+        </ul>
+        <img src="../Pictures/logo/rMath.jpg" alt="logo">
+    </div>
+    <div class="signup-container">
+        <h1>Register your NET-ID</h1>
+        <form method="POST" id="signForm">
+            <label for="name">Name*</label>
+            <input type="text" id="name" name="name" placeholder="Name" required>
+
+            <label for="netid">NETID*</label>
+            <input type="text" id="username" name="netid" placeholder="NETID" required>
+
+            <label for="email">Email*</label>
+            <input type="email" id="email" name="email" placeholder="For resetting password">
+
+            <label for="password">Password* <span id="password-info">&#9432</span> </label>
+            <input type="password" id="password" name="password" placeholder="Different from RUID" required>
+
+            <label for="confirm-password">Confirm Password*</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder='Retype password' required>
+
+            <label for="currentYear">CurrentYear* </label>
+            <select id="crntYr" name="currentYear" required>
+                <option value="">Select </option>
+                <option value="Freshman">Freshman </option>
+                <option value="Sophomore">Sophomore </option>
+                <option value="Junior">Junior </option>
+                <option value="Senior">Senior </option>
+            </select>
+
+            <label for="courses-taken">Courses Taken(Sorted Numerically)</label>
+            <div class="custom-dropdown">
+                <input type="text" id="search-input" placeholder="Search courses..." oninput="filterOptions()">
+                <div id="dropdown-options" class="dropdown-options hidden">
+                    <div style="text-align: right; padding: 5px 10px;">
+                        <button type="button" id="close-dropdown" style="border: none; background: none; font-size: 18px; cursor: pointer;">✖</button>
+                    </div>
+                    <!-- Course options will be inserted here -->
+                </div>
+                
+            </div>
+
+            <label for="matric">Matriculation Date*</label>
+            <select id="matric" name="matric" required>
+                <option value="">Select </option>
+                <option value="2021">2021 </option>
+                <option value="2022">2022 </option>
+                <option value="2023">2023 </option>
+                <option value="2024">2024 </option>
+                <option value="2025">2025 </option>
+                <option value="2026">2026 </option>
+            </select>
+
+            <label for="gradDate">Expected graduation year*</label>
+            <select id="gradDate" name="gradDate" required>
+                <option value="">Select </option>
+                <option value="2026">2026 </option>
+                <option value="2027">2027 </option>
+                <option value="2028">2028 </option>
+            </select>
+
+            <label for="major">Current major*</label>
+            <select id="major" name="major" required>
+                <option value="">Select </option>
+                <option value="Electrical Engineering">Electrical Engineering </option>
+                <option value="Computer Engineering">Computer Engineering </option>
+            </select>
+
+            <div class="terms-container">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#">Terms and Policies</a></label>
+            </div>
+            <span id="errMsg"></span>
+            <button type="submit" id="signBtn">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="../Login/login.html">Log in</a></p>
+    </div>
+    <script src="register.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24hr Course Planner</title>
+    <link rel="stylesheet" href="../home.css">
+    <link rel="stylesheet" href="courseplanner.css">
+</head>
+<body>
+  <div class="top-navbar">
+    <div class="navbar-left">
+      <a href="#">Welcome, <span class="user-name">[insert JS_name here]</span></a>
+    </div>
+    <div class="navbar-right">
+      <input id="searchBttn" type="text" placeholder="Search">
+      <span>Help</span>
+      <span>Logout</span>
+    </div>
+  </div>
+    <h1>24hr Course Planner</h1>
+    <div class="container">
+      <div class="calendar">
+        <div class="header">
+            <div class="day">Time</div>
+            <div class="day">Monday</div>
+            <div class="day">Tuesday</div>
+            <div class="day">Wednesday</div>
+            <div class="day">Thursday</div>
+            <div class="day">Friday</div>
+        </div>
+        <div class="calendar-grid">
+            <div class="time-column">
+                <!-- Time slots from 00:00 to 23:00 -->
+                <div class="time-slot">00:00</div>
+                <div class="time-slot">01:00</div>
+                <div class="time-slot">02:00</div>
+                <div class="time-slot">03:00</div>
+                <div class="time-slot">04:00</div>
+                <div class="time-slot">05:00</div>
+                <div class="time-slot">06:00</div>
+                <div class="time-slot">07:00</div>
+                <div class="time-slot">08:00</div>
+                <div class="time-slot">09:00</div>
+                <div class="time-slot">10:00</div>
+                <div class="time-slot">11:00</div>
+                <div class="time-slot">12:00</div>
+                <div class="time-slot">13:00</div>
+                <div class="time-slot">14:00</div>
+                <div class="time-slot">15:00</div>
+                <div class="time-slot">16:00</div>
+                <div class="time-slot">17:00</div>
+                <div class="time-slot">18:00</div>
+                <div class="time-slot">19:00</div>
+                <div class="time-slot">20:00</div>
+                <div class="time-slot">21:00</div>
+                <div class="time-slot">22:00</div>
+                <div class="time-slot">23:00</div>
+            </div>
+            <div class="days">
+                <div class="day-column" id="monday"></div>
+                <div class="day-column" id="tuesday"></div>
+                <div class="day-column" id="wednesday"></div>
+                <div class="day-column" id="thursday"></div>
+                <div class="day-column" id="friday"></div>
+            </div>
+        </div>
+    </div>
+        <div class="event-form">
+            <h2>Add Event</h2>
+            <form id="eventForm">
+                <label for="eventName">Event Name:</label>
+                <input type="text" id="eventName" required>
+                <label for="eventDay">Day:</label>
+                <select id="eventDay" required>
+                    <option value="monday">Monday</option>
+                    <option value="tuesday">Tuesday</option>
+                    <option value="wednesday">Wednesday</option>
+                    <option value="thursday">Thursday</option>
+                    <option value="friday">Friday</option>
+                </select>
+                <label for="startTime">Start Time:</label>
+                <input type="time" id="startTime" required>
+                <label for="endTime">End Time:</label>
+                <input type="time" id="endTime" required>
+                <button type="submit">Add Event</button>
+            </form>
+        </div>
+    </div>
+    <script src="courseplanner.js"></script>
+</body>
+</html>

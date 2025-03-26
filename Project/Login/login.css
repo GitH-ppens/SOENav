@@ -1,0 +1,14 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+#errMsg{
+    display: block;
+    color: red;
+    padding: 5px;
+    margin: 15px auto;
+    background-color: black;
+    transition: all 0.5s ease;
+    text-align: center;
+}

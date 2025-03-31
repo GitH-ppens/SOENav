@@ -1,0 +1,33 @@
+CREATE TABLE CourseList( id INT AUTO_INCREMENT PRIMARY KEY,
+						SchoolCode int,
+						DepartmentCode int, 
+                        CourseCode int, 
+                        CourseName char(25));
+CREATE TABLE Users( id INT AUTO_INCREMENT PRIMARY KEY,
+					StudentName char(40) NOT NULL,
+                    UserPassword char(10) NOT NULL); 
+CREATE TABLE PastEnrollments( SchoolCode int,
+							  DepartmentCode int, 
+							  CourseCode int, 
+							  CourseName char(25),
+                              student_id INT,
+						      course_id INT,
+							  PRIMARY KEY (student_id, course_id),
+							  FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+							  FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE,
+                              Grade char(3));
+CREATE TABLE PlannedCourses( id INT AUTO_INCREMENT PRIMARY KEY,
+							 SchoolCode int,
+							 DepartmentCode int, 
+							 CourseCode int, 
+                             CourseName char(25));
+CREATE TABLE RegisteredCourses( id INT AUTO_INCREMENT PRIMARY KEY,
+								SchoolCode int,
+							    DepartmentCode int, 
+								CourseCode int, 
+								CourseName char(25));
+CREATE TABLE Enrollments ( student_id INT,
+						   course_id INT,
+						   PRIMARY KEY (student_id, course_id),
+						   FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+						   FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE);

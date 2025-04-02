@@ -1,0 +1,66 @@
+{
+  "majors": {
+    "electrical_engineering": {
+      "freshman": {
+        "fall": [
+          { "code": "01:160:159", "name": "General Chemistry for Engineers", "type": "optional" },
+          { "code": "01:160:171", "name": "Introduction to Experimentation", "type": "optional" },
+          { "code": "01:355:101", "name": "Expository Writing", "type": "optional" },
+          { "code": "14:440:100", "name": "Engineering Orientation", "type": "required" },
+          { "code": "01:640:151", "name": "Calculus I", "type": "required" },
+          { "code": "01:750:123", "name": "Analytical Physics IA", "type": "required" }
+        ],
+        "spring": [
+          { "code": "14:440:127", "name": "Intro to Computers for Engineers", "type": "optional" },
+          { "code": "14:440:221", "name": "Engineering Mechanics", "type": "optional" },
+          { "code": "01:640:152", "name": "Calculus II", "type": "required" },
+          { "code": "01:750:124", "name": "Analytical Physics IB", "type": "required" },
+          { "code": "__", "name": "Hum/Soc elective", "type": "optional" }
+        ]
+      },
+      "sophomore": {
+        "fall": [
+          { "code": "14:332:221", "name": "Principles of Electrical Engineering I", "type": "required" },
+          { "code": "14:332:223", "name": "Digital Logic Design", "type": "required" },
+          { "code": "14:332:253", "name": "Digital Logic Design Lab", "type": "required" },
+          { "code": "01:640:244", "name": "Differential Equations", "type": "required" },
+          { "code": "01:750:227", "name": "Analytical Physics IIA", "type": "required" }
+        ],
+        "spring": [
+          { "code": "14:332:222", "name": "Principles of Electrical Engineering II", "type": "required" },
+          { "code": "14:332:226", "name": "Probability & Random Processes", "type": "required" },
+          { "code": "14:332:252", "name": "Programming Method I", "type": "required" },
+          { "code": "01:750:229", "name": "Analytical Physics II Lab", "type": "required" }
+        ]
+      },
+      "junior": {
+        "fall": [
+          { "code": "14:332:331", "name": "Computer Architecture", "type": "required" },
+          { "code": "14:332:333", "name": "Computer Architecture Lab", "type": "required" },
+          { "code": "14:332:335", "name": "Linear Systems & Signals", "type": "required" },
+          { "code": "14:332:361", "name": "Electronic Devices", "type": "required" },
+          { "code": "14:332:363", "name": "Electronic Devices Lab", "type": "required" }
+        ],
+        "spring": [
+          { "code": "14:332:312", "name": "Discrete Mathematics", "type": "optional" },
+          { "code": "14:332:336", "name": "Digital Electronics", "type": "required" },
+          { "code": "14:332:366", "name": "Digital Electronics Lab", "type": "required" },
+          { "code": "14:540:343", "name": "Engineering Economics", "type": "optional" }
+        ]
+      },
+      "senior": {
+        "fall": [
+          { "code": "14:332:449", "name": "Intro to Capstone Design", "type": "required" },
+          { "code": "__", "name": "Electrical elective", "type": "required" },
+          { "code": "__", "name": "Technical elective", "type": "optional" },
+          { "code": "__", "name": "Science Math Eng elective", "type": "optional" }
+        ],
+        "spring": [
+          { "code": "14:332:448", "name": "Capstone Design in ECE", "type": "required" },
+          { "code": "__", "name": "Electrical elective", "type": "required" },
+          { "code": "__", "name": "General elective", "type": "optional" }
+        ]
+      }
+    }
+  }
+}

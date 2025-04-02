@@ -1,114 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Recommendation System</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f9fa; }
-        .container { max-width: 900px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
-        h1, h2 { background: #d50032; color: #fff; padding: 10px; border-radius: 4px; text-align: center; }
-        select { width: 100%; padding: 10px; margin: 20px 0; border: 1px solid #ccc; border-radius: 4px; }
-        .card { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-top: 20px; background: #fff; }
-        .hidden { display: none; }
-        .required { color: #d9534f; font-weight: bold; }
-        .optional { color: #5cb85c; }
-        .legend { font-size: 0.9em; color: #555; margin-top: 10px; text-align: center; }
-        .legend span { display: inline-block; margin: 0 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Schedule Recommendation</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; }
+    .container { max-width: 900px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+    h1, h2 { text-align: center; background: #d50032; color: white; padding: 10px; border-radius: 4px; }
+    select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; }
+    .schedule { display: flex; justify-content: space-between; }
+    .semester { width: 48%; padding: 10px; background: #e9ecef; border-radius: 8px; }
+    .required { font-weight: bold; color: #d9534f; }
+    .optional { color: #5cb85c; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 5px; border-bottom: 1px solid #ccc; }
+    .hidden { display: none; }
+    .confirm-button { background: #28a745; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; font-size: 16px; display: block; margin: 20px auto; }
+    .legend { text-align: center; margin: 20px 0; font-size: 14px; }
+    .legend span { display: inline-block; margin: 0 10px; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Course Recommendation System</h1>
-        <div class="legend">
-            <span class="required">■ Required</span>
-            <span class="optional">■ Not Required</span>
-        </div>
-        <select id="majorSelect" onchange="filterCourses()">
-            <option value="">Select your major</option>
-            <option value="biomedical">Biomedical Engineering</option>
-            <option value="chemical">Chemical Engineering</option>
-            <option value="civil">Civil Engineering</option>
-            <option value="electrical">Electrical Engineering</option>
-        </select>
-        <select id="courseSelect" onchange="showRecommendations()">
-            <option value="">Select a course</option>
-        </select>
-        <div id="recommendations" class="card hidden">
-            <h2>Recommended Courses</h2>
-            <ul id="recommendationList"></ul>
-        </div>
+<div class="container">
+  <h1>Course Schedule Recommendation</h1>
+  <select id="majorSelect" onchange="updateYears()">
+    <option value="">Select your major</option>
+  </select>
+  <select id="yearSelect" onchange="showSchedule()">
+    <option value="">Select your year</option>
+  </select>
+  <div id="scheduleContainer" class="hidden">
+    <h2>Recommended Schedule</h2>
+    <div class="legend">
+      <span class="required">■ Mandatory</span>
+      <span class="optional">■ Optional</span>
     </div>
-    <script>
-        const courses = {
-            biomedical: [
-                { code: "14:125:201", name: "INTRO BIOMEDICAL ENG" }
-            ],
-            chemical: [
-                { code: "14:155:201", name: "CHEME MAT ENERGY BAL" }
-            ],
-            civil: [
-                { code: "14:180:215", name: "ENGINEERING GRAPHICS" }
-            ],
-            electrical: [
-                { code: "14:332:221", name: "PRIN ELEC ENGG I" },
-                { code: "14:332:443", name: "MACHINE LEARNING" }
-            ]
-        };
+    <div class="schedule">
+      <div class="semester">
+        <h3>Fall Semester</h3>
+        <ul id="fallCourses"></ul>
+      </div>
+      <div class="semester">
+        <h3>Spring Semester</h3>
+        <ul id="springCourses"></ul>
+      </div>
+    </div>
+    <button class="confirm-button" onclick="confirmSchedule()">Confirm Schedule</button>
+  </div>
+</div>
+<script>
+  let curriculumData = {};
 
-        const recommendations = {
-            "14:125:201": [
-                { course: "14:125:255 : BME SYST PHYSIOLOGY", type: "required" },
-                { course: "14:125:303 : BIOMED TRANSP PHENOM", type: "optional" }
-            ],
-            "14:155:201": [
-                { course: "14:155:291 : UNDERGRAD RSRCH SO", type: "required" }
-            ],
-            "14:180:215": [
-                { course: "14:180:243 : MECHANICS OF SOLIDS", type: "optional" }
-            ],
-            "14:332:221": [
-                { course: "14:332:222 : PRIN ELEC ENGG II", type: "required" },
-                { course: "14:332:345 : LINEAR SYS & SIGNALS", type: "optional" }
-            ],
-            "14:332:443": [
-                { course: "14:332:345 : LINEAR SYS & SIGNALS", type: "required" },
-                { course: "14:332:231 : DIGITAL LOGIC DESIGN", type: "optional" }
-            ]
-        };
+  fetch('data.json')
+          .then(response => response.json())
+          .then(data => {
+            curriculumData = data.majors;
+            populateMajors();
+          })
+          .catch(error => console.error('Error loading data:', error));
 
-        function filterCourses() {
-            const majorSelect = document.getElementById('majorSelect').value;
-            const courseSelect = document.getElementById('courseSelect');
-            courseSelect.innerHTML = '<option value="">Select a course</option>';
-            if (courses[majorSelect]) {
-                courses[majorSelect].forEach(course => {
-                    const option = document.createElement('option');
-                    option.value = course.code;
-                    option.textContent = `${course.code} : ${course.name}`;
-                    courseSelect.appendChild(option);
-                });
-            }
-        }
+  function populateMajors() {
+    const majorSelect = document.getElementById('majorSelect');
+    Object.keys(curriculumData).forEach(major => {
+      let option = document.createElement('option');
+      option.value = major;
+      option.textContent = major.replace(/_/g, ' ').toUpperCase();
+      majorSelect.appendChild(option);
+    });
+  }
 
-        function showRecommendations() {
-            const selectedCourse = document.getElementById('courseSelect').value;
-            const recommendationList = document.getElementById('recommendationList');
-            const recommendationsDiv = document.getElementById('recommendations');
-            
-            recommendationList.innerHTML = '';
-            if (selectedCourse && recommendations[selectedCourse]) {
-                recommendations[selectedCourse].forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = item.course;
-                    li.className = item.type;
-                    recommendationList.appendChild(li);
-                });
-                recommendationsDiv.classList.remove('hidden');
-            } else {
-                recommendationsDiv.classList.add('hidden');
-            }
-        }
-    </script>
+  function updateYears() {
+    const major = document.getElementById('majorSelect').value;
+    const yearSelect = document.getElementById('yearSelect');
+    yearSelect.innerHTML = '<option value="">Select your year</option>';
+    if (major && curriculumData[major]) {
+      Object.keys(curriculumData[major]).forEach(year => {
+        let option = document.createElement('option');
+        option.value = year;
+        option.textContent = year.charAt(0).toUpperCase() + year.slice(1);
+        yearSelect.appendChild(option);
+      });
+    }
+  }
+
+  function showSchedule() {
+    const major = document.getElementById('majorSelect').value;
+    const year = document.getElementById('yearSelect').value;
+    const fallList = document.getElementById('fallCourses');
+    const springList = document.getElementById('springCourses');
+    const scheduleContainer = document.getElementById('scheduleContainer');
+
+    fallList.innerHTML = '';
+    springList.innerHTML = '';
+
+    if (major && year && curriculumData[major][year]) {
+      const schedule = curriculumData[major][year];
+      schedule.fall.forEach(course => {
+        let li = document.createElement('li');
+        li.textContent = `${course.code}: ${course.name}`;
+        li.className = course.type;
+        fallList.appendChild(li);
+      });
+      schedule.spring.forEach(course => {
+        let li = document.createElement('li');
+        li.textContent = `${course.code}: ${course.name}`;
+        li.className = course.type;
+        springList.appendChild(li);
+      });
+      scheduleContainer.classList.remove('hidden');
+    } else {
+      scheduleContainer.classList.add('hidden');
+    }
+  }
+
+  function confirmSchedule() {
+    alert("Your schedule has been confirmed!");
+  }
+</script>
 </body>
 </html>

@@ -7,15 +7,87 @@
     <link href="Pictures/Logo/ico.png" rel="icon" type="image/png">
     <link rel="stylesheet" href="https://cas.rutgers.edu/css/cas.css?v=2">
     <link rel="stylesheet" href="login.css">
+    <!-- Add Google Sign-In API script -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+      /* Google Sign-In Button Styling */
+      .google-btn {
+        width: 100%;
+        height: 42px;
+        background-color: #4285f4;
+        border-radius: 2px;
+        box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+        cursor: pointer;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+      
+      .google-btn:hover {
+        box-shadow: 0 0 6px #4285f4;
+        background-color: #4285f4;
+      }
+      
+      .google-btn:active {
+        background: #1669F2;
+      }
+      
+      .google-icon-wrapper {
+        width: 40px;
+        height: 40px;
+        border-radius: 2px;
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .google-icon {
+        width: 18px;
+        height: 18px;
+      }
+      
+      .btn-text {
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.2px;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+
+      .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .separator::before,
+      .separator::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .separator::before {
+        margin-right: 10px;
+      }
+
+      .separator::after {
+        margin-left: 10px;
+      }
+    </style>
 </head>
-    <body class="login" >
-       
+<body class="login">
     <header role="banner" style="text-align: center; padding: 1rem 0;">
       <a href="https://rutgers.edu" style="display: inline-block; vertical-align: middle; line-height: 0;" title="Go to Rutgers University homepage">
         <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 507.5 150" class="h-8 md:h-10" style="height: 48px; width: auto;">
           <path class="cls-2" d="c121.11,78.18l2.39-.9c19.85-7.48,29.49-18.78,29.49-34.54,0-10.92-4.37-19.82-13.34-27.21-9.51-7.71-22.59-11.62-38.86-11.62,0,0-92.97,0-96.88,0v20.6c.61,0,4.93,0,11.28,0v101.02H3.91v20.56h66.07v-20.56h-11.66v-43.53h23.95l27.4,43.53h-15.41v20.56h71.54v-20.56h-13.53l-31.16-47.35Zm-18.87-21.74l-.06.04c-5.1,3.99-12.62,6.01-22.37,6.01h-21.49V24.5c14.64,0,26.5,0,26.5,0,8.28,0,14.72,2.32,19.11,6.86,3.2,3.17,4.83,7.17,4.83,11.91,0,5.1-2.2,9.53-6.53,13.17h0Z" fill="#c03"></path>
           <path class="cls-1" d="m84.83,24.5h-26.51s0,37.99,0,37.99h21.49c9.74,0,17.27-2.02,22.37-6.01l.06-.04c4.33-3.64,6.53-8.08,6.53-13.17,0-4.74-1.63-8.74-4.83-11.91-4.4-4.54-10.83-6.86-19.11-6.86h0Zm14.96,28.89h-.02c-4.39,3.45-11.11,5.19-19.96,5.19h-17.58v-30.18h22.6c7.17,0,12.66,1.9,16.3,5.67l.06.06c2.47,2.45,3.67,5.43,3.67,9.13,0,3.92-1.66,7.23-5.07,10.13h0Z"></path>
-          <path class="cls-1" d="m154.38,121.62l-27.34-41.53c19.82-8.05,29.86-20.61,29.86-37.35,0-12.15-4.83-22.04-14.79-30.25C131.89,4.2,117.99,0,100.79,0H0s0,28.38,0,28.38h11.28v93.23H0v28.38h73.89v-28.38h-11.66v-35.71h17.89l22.48,35.71h-12.24v28.38h79.35v-28.38h-15.33Zm11.42,24.47h-71.54v-20.56h15.41l-27.4-43.53h-23.95v43.53h11.66v20.56H3.91v-20.56h11.28V24.5H3.91V3.91h96.89c16.27,0,29.35,3.91,38.86,11.62,8.97,7.39,13.34,16.29,13.34,27.21,0,15.77-9.65,27.06-29.49,34.54l-2.39.9,31.16,47.35h13.53v20.56Z"></path>
+          <path class="cls-1" d="m154.38,121.62l-27.34-41.53c19.82-8.05,29.86-20.61,29.86-37.35,0-12.15-4.83-22.04-14.79-30.25C131.89,4.2,117.99,0,100.79,0H0s0,28.38,0,28.38h11.28v93.23H0v28.38h73.89v-28.38h-11.66v-35.71h17.89l22.48,35.71h-12.24v28.38h79.35v-28.38h-15.33Zm11.42,24.47h-71.54v-20.56h15.41l-27.4-43.53h-23.95v43.53h11.66v20.56H3.91v-20.56h11.28V24.5H3.91V3.91h96.89c16.27,0,29.35,3.91,38.86,11.62,8.97,7.39,13.34,16.29,13.34,27.21,0,15.77-9.65,27.06-29.49,34.54l-2.39,.9,31.16,47.35h13.53v20.56Z"></path>
           <rect class="cls-1" x="198.09" width="3.91" height="150"></rect>
           <path class="cls-1" d="m254.78,100.24c-1.94-3.31-2.74-4.68-4.68-8.21-4.97-9-6.48-11.45-8.28-12.24-.5-.22-.94-.36-1.58-.43v20.88h-9.86v-50.04h18.65c8.86,0,14.69,5.9,14.69,14.69,0,7.49-4.97,13.68-11.16,13.83,1.01.79,1.44,1.22,2.09,2.09,2.59,3.24,10.23,16.27,12.02,19.44h-11.88Zm-5.26-41.26c-1.15-.43-3.24-.72-5.69-.72h-3.6v13.54h3.38c4.32,0,6.19-.43,7.56-1.66,1.22-1.15,1.94-2.95,1.94-5.04,0-3.1-1.22-5.26-3.6-6.12Z"></path>
           <path class="cls-1" d="m306.33,91.74c-1.3,3.96-6.19,9.43-16.99,9.43-7.63,0-13.25-2.3-16.06-6.7-1.66-2.59-2.16-4.61-2.16-9.43v-34.85h10.3v32.91c0,3.1.29,4.9.86,5.98,1.15,2.23,3.53,3.46,6.84,3.46,4.39,0,7.2-2.16,7.63-5.83.14-1.08.14-1.8.14-4.46v-32.04h10.23v33.7c0,4.75-.07,5.69-.79,7.85Z"></path>
@@ -45,6 +117,17 @@
                 <button class="btn btn-block btn-submit" type="submit">Log In</button>
               </form>
               <span id="errMsg" style="display: none;"></span>
+              
+              <!-- Add separator between login methods -->
+              <div class="separator">OR</div>
+              
+              <!-- Add Google Sign-In Button -->
+              <div class="google-btn" onclick="signInWithGoogle()">
+                <div class="google-icon-wrapper">
+                  <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                </div>
+                <p class="btn-text"><b>Sign in with Google</b></p>
+              </div>
     
               <div class="text-center small mt-3">
                 <span>Forgot your <a href="https://netid.rutgers.edu/displayForgottenPasswordForm.htm">password</a>?</span><br>
@@ -59,5 +142,14 @@
         <span class="px-3 d-inline-block small">Edited by GitHappens</span>
       </footer>
     <script src="login.js"></script>
+    <script>
+      function signInWithGoogle() {
+        console.log("Google Sign-In button clicked");
+        // This would normally trigger the Google OAuth flow
+        // You would need to implement the Google Sign-In API properly
+        // For demonstration purposes, we're just logging a message
+        alert("Google Sign-In functionality would be triggered here");
+      }
+    </script>
 </body>
 </html>

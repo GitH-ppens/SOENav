@@ -102,17 +102,45 @@ app.post("/requirement", async (req, res) => {
   const major = req.body;
   if (!major) return res.status(400).json({ message: "Missing credentials" });
 
-  db.query("SELECT * FROM major_requirements WHERE major = ?", [major], async (err, results) => {
+  db.query("SELECT * FROM requirements WHERE major = ?", [major], async (err, results) => {
     if (err) return res.status(500).json({ message: "DB error" });
     if (results.length === 0){
       console.log(`requested for: ${major}, instead of: `);
-      return res.status(401).json({ message: "Invalid major"  });
+      return res.status(404).json({ message: "Major not found"  });
     }
     
     const majorinfo = results[0];
     
     res.status(200).json(majorinfo); // sends user data
   });
+});
+
+app.post("/saverequirements", async (req, res) => {
+  const query = `
+        INSERT INTO requirements
+        (degPt, major, requirements, version)
+        VALUES (?, ?, ?, ?)`;
+  
+  for(let obj in req.body){
+    const { degreePoint, program, requirements, version} =req.body[obj];//requirements is a list of objects
+    console.log(req.body[obj]);
+
+    if (!degreePoint || !program || !requirements || !version) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+  
+      db.query(
+        query,
+        [degreePoint, program, JSON.stringify(requirements), version],
+        (err, result) => {
+          if (err) {
+            console.error("Error inserting req:", err + degreePoint);
+            return res.status(500).json({ success: false, message: "Server error" });
+          }
+        }
+      );
+    }
+    res.status(200).json({ success: true, message: "Req Inserted successfully!" }); 
 });
 
 app.get("/", (req, res) => {

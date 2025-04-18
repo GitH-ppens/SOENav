@@ -203,6 +203,22 @@
 .gray { color: gray; }
 .red { color: red; }
 
+.progress-bar{
+  display: block;
+  margin: 0 auto;
+  background-color: lightskyblue;
+  height: 10px;
+  width: 500px;
+  border-radius: 2px;
+  border: 1px solid black;
+}
+.progress-bar::before {
+  content: "";  /* Fixed: 'normal' is incorrect, use empty string */
+  display: block;
+  height: 100%;  /* Added to ensure full height */
+  background-color: green;
+  width: var(--progress, 0%);
+}
 .semester-block{
   background-color: #aaa3a3;
   padding: 5px;

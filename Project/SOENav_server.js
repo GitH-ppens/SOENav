@@ -102,7 +102,7 @@ app.post("/requirement", async (req, res) => {
   const major = req.body;
   if (!major) return res.status(400).json({ message: "Missing credentials" });
 
-  db.query("SELECT * FROM requirements WHERE major = ?", [major], async (err, results) => {
+  db.query(`SELECT * FROM requirements WHERE major LIKE ?`, ['%'+major+'%'], async (err, results) => {
     if (err) return res.status(500).json({ message: "DB error" });
     if (results.length === 0){
       console.log(`requested for: ${major}, instead of: `);

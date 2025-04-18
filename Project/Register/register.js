@@ -171,7 +171,19 @@ const courses = [//all engineering courses
   "14:650:487 : AE DESIGN 1",
   "14:650:495 : INTERNSHIP IN MAE",
   "14:650:497 : CO-OP INTERNSHIP MAE",
-  "14:650:498 : UNDERGRD RES SENIORS"];
+  "14:650:498 : UNDERGRD RES SENIORS",
+  //Electives since they're too many alternatives(shortcut)//Assume 3credits with all electives
+  "Technical Elective",
+  "Technical Elective",
+  "Technical Elective",
+  "Technical Elective",
+  "Current H/SS Electives",
+  "Current H/SS Electives",
+  "Current Upper Level H/SS Electives",
+  "Current Upper Level H/SS Electives",
+  "Math Science and Eng Electives",
+  "Math Science and Eng Electives"
+];
 
 // Populate the dropdown with all courses
 function populateDropdown() {

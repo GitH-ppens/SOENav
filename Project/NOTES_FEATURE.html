@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Tools - Notes + Recommendations</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+    }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      gap: 20px;
+    }
+    .main-section {
+      flex: 2;
+    }
+    .sidebar {
+      flex: 1;
+    }
+    h1, h2 {
+      background: #d50032;
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    select, textarea, input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fff;
+    }
+    .required { color: #d9534f; font-weight: bold; }
+    .optional { color: #5cb85c; }
+    .legend {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .legend span {
+      display: inline-block;
+      margin: 0 10px;
+    }
+    .note {
+      border-bottom: 1px solid #eee;
+      padding: 8px 0;
+      position: relative;
+      transition: background-color 0.3s ease;
+    }
+    .note:hover {
+      background-color: #fff6f6;
+    }
+    .note strong {
+      color: #d50032;
+    }
+    .meta {
+      font-size: 0.75em;
+      color: #666;
+      display: block;
+      margin-top: 4px;
+    }
+    .autocomplete-suggestions {
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      background: white;
+      position: absolute;
+      z-index: 1000;
+      width: calc(100% - 42px);
+    }
+    .autocomplete-suggestions div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .autocomplete-suggestions div:hover {
+      background-color: #f1f1f1;
+    }
+    #advisorTools {
+      display: none;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="main-section">
+    <h1>Notes</h1>
+
+    <h2>Shared Notes</h2>
+    <textarea id="studentNote" rows="4" placeholder="Add a note to discuss with classmates or advisors..."></textarea>
+    <button id="addNoteBtn" onclick="addNote()">Add Note</button>
+
+    <div id="advisorTools">
+      <h2>Advisor Suggestions</h2>
+      <input type="text" id="advisorName" placeholder="Advisor's Name">
+      <textarea id="advisorNote" rows="3" placeholder="Advisor's suggestion..."></textarea>
+      <button onclick="addAdvisorNote()">Submit Suggestion</button>
+    </div>
+
+    <h2>Class Availability Notifications</h2>
+    <input type="text" id="notifyClass" placeholder="Enter course code (e.g., 14:332:221)" oninput="suggestCourses()">
+    <div id="autocompleteSuggestions" class="autocomplete-suggestions"></div>
+    <button onclick="subscribeNotification()">Notify Me When Available</button>
+
+  </div>
+
+  <div class="sidebar">
+    <div class="card">
+      <h2>Saved Notes</h2>
+      <div id="notesSection"></div>
+      <button onclick="toggleSaved('notesSection')">Toggle Saved Notes</button>
+    </div>
+
+    <div class="card">
+      <h2>Notifications</h2>
+      <div id="notificationList"></div>
+      <button onclick="toggleSaved('notificationList')">Toggle Saved Notifications</button>
+    </div>
+  </div>
+
+  <div id="advisorSection" class="card hidden"></div>
+</div>
+</div>
+
+<script>
+  const allCourses = [
+    "14:125:201", "14:125:255", "14:125:303", "14:155:201", "14:155:291",
+    "14:180:215", "14:180:243", "14:332:221", "14:332:222", "14:332:345",
+    "14:332:443", "14:332:231", "14:332:346", "14:332:424", "14:332:423",
+    "14:332:452", "14:332:434", "14:332:437"
+  ];
+
+// TODO: add the student email from the login
+
+  const userEmail = "student.name@rutgers.edu";
+  const isAdvisor = false;
+
+  const notesSection = document.getElementById('notesSection');
+  const advisorSection = document.getElementById('advisorSection');
+  const notificationList = document.getElementById('notificationList');
+  const suggestionsBox = document.getElementById('autocompleteSuggestions');
+
+//TODO: add the advisor check
+
+  if (isAdvisor) {
+    document.getElementById("advisorTools").style.display = "block";
+    advisorSection.classList.remove("hidden");
+  }
+
+  function getCurrentTime() {
+    const now = new Date();
+    return now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // TODO: Implement backend save here (e.g., POST to /api/notes)
+
+  function addNote() {
+    const note = document.getElementById('studentNote').value.trim();
+    if (note) {
+      const p = document.createElement('p');
+      p.className = 'note';
+      p.innerHTML = `${note}<span class="meta">— ${userEmail}, ${getCurrentTime()}</span>`;
+      notesSection.prepend(p);
+      document.getElementById('studentNote').value = '';
+    }
+  }
+
+  function addAdvisorNote() {
+    const name = document.getElementById('advisorName').value.trim();
+    const note = document.getElementById('advisorNote').value.trim();
+    if (name && note) {
+      const p = document.createElement('p');
+      p.className = 'note';
+      p.innerHTML = `<strong>${name}:</strong> ${note}<span class="meta"> — ${getCurrentTime()}</span>`;
+      advisorSection.prepend(p);
+      document.getElementById('advisorName').value = '';
+      document.getElementById('advisorNote').value = '';
+    }
+  }
+
+  function suggestCourses() {
+    const input = document.getElementById('notifyClass').value.toLowerCase();
+    suggestionsBox.innerHTML = '';
+    if (input.length > 1) {
+      const matches = allCourses.filter(course => course.toLowerCase().includes(input));
+      matches.forEach(match => {
+        const div = document.createElement('div');
+        div.textContent = match;
+        div.onclick = () => {
+          document.getElementById('notifyClass').value = match;
+          suggestionsBox.innerHTML = '';
+        };
+        suggestionsBox.appendChild(div);
+      });
+    }
+  }
+
+  function subscribeNotification() {
+    const course = document.getElementById('notifyClass').value.trim();
+    if (course) {
+      const p = document.createElement('p');
+      p.className = 'note';
+      p.innerHTML = `🔔 You will be notified at <strong>${userEmail}</strong> when <strong>${course}</strong> opens up.`;
+      notificationList.prepend(p);
+      document.getElementById('notifyClass').value = '';
+      suggestionsBox.innerHTML = '';
+    }
+  }
+
+  function toggleSaved(sectionId) {
+    const section = document.getElementById(sectionId);
+    section.classList.toggle('hidden');
+  }
+</script>
+</body>
+</html>

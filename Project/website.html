@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Schedule Recommendation</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; }
+    .container { max-width: 900px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+    h1, h2 { text-align: center; background: #d50032; color: white; padding: 10px; border-radius: 4px; }
+    select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; }
+    .schedule { display: flex; justify-content: space-between; }
+    .semester { width: 48%; padding: 10px; background: #e9ecef; border-radius: 8px; }
+    .required { font-weight: bold; color: #d9534f; }
+    .optional { color: #5cb85c; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 5px; border-bottom: 1px solid #ccc; }
+    .hidden { display: none; }
+    .confirm-button { background: #28a745; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; font-size: 16px; display: block; margin: 20px auto; }
+    .legend { text-align: center; margin: 20px 0; font-size: 14px; }
+    .legend span { display: inline-block; margin: 0 10px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Course Schedule Recommendation</h1>
+  <select id="majorSelect" onchange="updateYears()">
+    <option value="">Select your major</option>
+  </select>
+  <select id="yearSelect" onchange="showSchedule()">
+    <option value="">Select your year</option>
+  </select>
+  <div id="scheduleContainer" class="hidden">
+    <h2>Recommended Schedule</h2>
+    <div class="legend">
+      <span class="required">■ Mandatory</span>
+      <span class="optional">■ Optional</span>
+    </div>
+    <div class="schedule">
+      <div class="semester">
+        <h3>Fall Semester</h3>
+        <ul id="fallCourses"></ul>
+      </div>
+      <div class="semester">
+        <h3>Spring Semester</h3>
+        <ul id="springCourses"></ul>
+      </div>
+    </div>
+    <div id="electiveContainer" class="hidden">
+      <h3>Select Your Electives</h3>
+      <select id="electiveSelect"></select>
+    </div>
+    <button class="confirm-button" onclick="confirmSchedule()">Confirm Schedule</button>
+  </div>
+</div>
+<script>
+  let curriculumData = {};
+
+  fetch('data.json')
+          .then(response => response.json())
+          .then(data => {
+            curriculumData = data.majors;
+            populateMajors();
+          })
+          .catch(error => console.error('Error loading data:', error));
+
+  function populateMajors() {
+    const majorSelect = document.getElementById('majorSelect');
+    Object.keys(curriculumData).forEach(major => {
+      let option = document.createElement('option');
+      option.value = major;
+      option.textContent = major.replace(/_/g, ' ').toUpperCase();
+      majorSelect.appendChild(option);
+    });
+  }
+
+  function updateYears() {
+    const major = document.getElementById('majorSelect').value;
+    const yearSelect = document.getElementById('yearSelect');
+    yearSelect.innerHTML = '<option value="">Select your year</option>';
+    if (major && curriculumData[major]) {
+      Object.keys(curriculumData[major]).forEach(year => {
+        let option = document.createElement('option');
+        option.value = year;
+        option.textContent = year.charAt(0).toUpperCase() + year.slice(1);
+        yearSelect.appendChild(option);
+      });
+    }
+  }
+
+  function showSchedule() {
+    const major = document.getElementById('majorSelect').value;
+    const year = document.getElementById('yearSelect').value;
+    const fallList = document.getElementById('fallCourses');
+    const springList = document.getElementById('springCourses');
+    const scheduleContainer = document.getElementById('scheduleContainer');
+    const electiveContainer = document.getElementById('electiveContainer');
+    const electiveSelect = document.getElementById('electiveSelect');
+
+    fallList.innerHTML = '';
+    springList.innerHTML = '';
+    electiveSelect.innerHTML = '';
+
+    if (major && year && curriculumData[major][year]) {
+      const schedule = curriculumData[major][year];
+      schedule.fall.forEach(course => {
+        let li = document.createElement('li');
+        li.textContent = `${course.code}: ${course.name}`;
+        li.className = course.type;
+        fallList.appendChild(li);
+      });
+      schedule.spring.forEach(course => {
+        let li = document.createElement('li');
+        li.textContent = `${course.code}: ${course.name}`;
+        li.className = course.type;
+        springList.appendChild(li);
+      });
+
+      if (schedule.electives) {
+        schedule.electives.forEach(elective => {
+          let option = document.createElement('option');
+          option.value = elective.code;
+          option.textContent = `${elective.code}: ${elective.name}`;
+          electiveSelect.appendChild(option);
+        });
+        electiveContainer.classList.remove('hidden');
+      } else {
+        electiveContainer.classList.add('hidden');
+      }
+
+      scheduleContainer.classList.remove('hidden');
+    } else {
+      scheduleContainer.classList.add('hidden');
+    }
+  }
+
+  function confirmSchedule() {
+    alert("Your schedule has been confirmed!");
+  }
+</script>
+</body>
+</html>
+

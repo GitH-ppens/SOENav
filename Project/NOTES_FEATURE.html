@@ -140,7 +140,6 @@
     <input type="text" id="notifyClass" placeholder="Enter course code (e.g., 14:332:221)" oninput="suggestCourses()">
     <div id="autocompleteSuggestions" class="autocomplete-suggestions"></div>
     <button onclick="subscribeNotification()">Notify Me When Available</button>
-
   </div>
 
   <div class="sidebar">
@@ -186,14 +185,42 @@
     return now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  function addNote() {
+  async function addNote() {
     const note = document.getElementById('studentNote').value.trim();
     if (note) {
-      const p = document.createElement('p');
-      p.className = 'note';
-      p.innerHTML = `${note}<span class="meta">— ${userEmail}, ${getCurrentTime()}</span>`;
-      notesSection.prepend(p);
-      document.getElementById('studentNote').value = '';
+      try {
+        await fetch('http://localhost:3000/saveNote', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userEmail: userEmail,
+            note: note
+          })
+        });
+        document.getElementById('studentNote').value = '';
+        await loadNotes();
+      } catch (err) {
+        console.error('Error saving note:', err);
+      }
+    }
+  }
+
+  // loadNotes() function
+  async function loadNotes() {
+    try {
+      const res = await fetch('http://localhost:3000/getNotes');
+      const notes = await res.json();
+      notesSection.innerHTML = '';
+      notes.forEach(noteObj => {
+        const p = document.createElement('p');
+        p.className = 'note';
+        p.innerHTML = `${noteObj.note_text}<span class="meta">— ${noteObj.user_email}, ${new Date(noteObj.created_at).toLocaleString()}</span>`;
+        notesSection.appendChild(p);
+      });
+    } catch (err) {
+      console.error('Error loading notes:', err);
     }
   }
 
@@ -232,7 +259,7 @@
     if (course) {
       const p = document.createElement('p');
       p.className = 'note';
-      p.innerHTML = `🔔 You will be notified at <strong>${userEmail}</strong> when <strong>${course}</strong> opens up.`;
+      p.innerHTML = `You will be notified at <strong>${userEmail}</strong> when <strong>${course}</strong> opens up.`;
       notificationList.prepend(p);
       document.getElementById('notifyClass').value = '';
       suggestionsBox.innerHTML = '';
@@ -243,6 +270,10 @@
     const section = document.getElementById(sectionId);
     section.classList.toggle('hidden');
   }
+
+  // loadNotes
+  loadNotes();
 </script>
+
 </body>
 </html>

@@ -167,6 +167,26 @@
  
 
       </main>
+
+
+      <script src="https://accounts.google.com/gsi/client" async></script>
+    <div id="g_id_onload"
+        data-client_id="747417243562-beacn2us65c3mvbaprp1013mt62vsve5.apps.googleusercontent.com"
+
+"
+        data-login_uri="https://gith-ppens.github.io/SOENav/Project/Login/login.html"
+
+"
+        data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-shape="rectangular"
+        data-logo_alignment="left">
+    </div>
  
 
       <footer class="py-4 d-flex justify-content-center align-items-center cas-footer">
@@ -178,138 +198,51 @@
       </footer>
  
 
-    <script src="login.js"></script>
-     <script type="module">
-
-  // Import the functions you need from the SDKs you need
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-
-  // TODO: Add SDKs for Firebase products that you want to use
-
-  // https://firebase.google.com/docs/web/setup#available-libraries
+   
 
 
-  // Your web app's Firebase configuration
-
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-  const firebaseConfig = {
-
-    apiKey: "AIzaSyA025FoA9GUtMuzlgIuF3sjZxFtqKMxH5Y",
-
-    authDomain: "soenav-1bd4f.firebaseapp.com",
-
-    projectId: "soenav-1bd4f",
-
-    storageBucket: "soenav-1bd4f.firebasestorage.app",
-
-    messagingSenderId: "615488241542",
-
-    appId: "1:615488241542:web:324bcce2193fe057997607",
-
-    measurementId: "G-TR7WXXS507"
-
-  };
-
-
-  // Initialize Firebase
-
-  const app = initializeApp(firebaseConfig);
-
-  const analytics = getAnalytics(app);
-
-</script>
-
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
-	<!-- Bootstrap theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<!-- Add icon library -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<title>How to create Firebase Google Login?</title>
-</head>
 <body>
 
-<br>
-<div class="container">	
-  <div class="row">
-  	 <div class="col-sm-4">
-		<button type="button" id="google-login" name="google-login" class="btn btn-danger btn-lg btn-block"><i class="fa fa-google "></i> Login with Google</button>
-	</div><!-- end col -->	
-  </div><!--  end row -->		
-  </form>
-</div>
-<br>
+  
+    
+ 
 
 </body>
-	<script type="module">
-	  // Import the functions you need from the SDKs you need
-	  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js";
-	  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-analytics.js";
-	  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-auth.js";
-	  // TODO: Add SDKs for Firebase products that you want to use
-	  // https://firebase.google.com/docs/web/setup#available-libraries
-
-	  // Your web app's Firebase configuration
-	  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-	  const firebaseConfig = {
-	  apiKey: "AIzaSyB4Z71YW8OGtcsh-tiazaqYC7BS05pTxi4",
-	  authDomain: "shinerweb-auth.firebaseapp.com",
-	  projectId: "shinerweb-auth",
-	  storageBucket: "shinerweb-auth.appspot.com",
-	  messagingSenderId: "487776642853",
-	  appId: "1:487776642853:web:25b4821e77c6de7e90dccc",
-	  measurementId: "G-00FGRRF868"
-	  };
-
-	  // Initialize Firebase
-	  const app = initializeApp(firebaseConfig);
-	  const analytics = getAnalytics(app);
-	  const auth = getAuth();
-	  //console.log(auth);
-
-	  const provider = new GoogleAuthProvider();
-	  console.log(provider);
-	  
-	  //----- Google login code start	  
-	  document.getElementById("google-login").addEventListener("click", function() {
-		  signInWithPopup(auth, provider)
-		  .then((result) => {
-		    // This gives you a Google Access Token. You can use it to access the Google API.
-		    const credential = GoogleAuthProvider.credentialFromResult(result);
-		    const token = credential.accessToken;
-		    // The signed-in user info.
-		    const user = result.user;
-		    alert("Welcome "+user.displayName);
-		    console.log(user);
-		    // ...
-		  }).catch((error) => {
-		    // Handle Errors here.
-		    const errorCode = error.code;
-		    const errorMessage = error.message;
-		    console.log(errorMessage);
-		    // The email of the user's account used.
-		    const email = error.customData.email;
-		    // The AuthCredential type that was used.
-		    const credential = GoogleAuthProvider.credentialFromError(error);
-		    // ...
-		  });		  		  
-	  });
-	  //----- End
-	  
-	</script>
-
 
 
      
  
 
 </body>
+<div id="g_id_onload"
+     data-client_id="747417243562-beacn2us65c3mvbaprp1013mt62vsve5.apps.googleusercontent.com"
+
+
+"
+     data-callback="handleCredentialResponse">
+</div>
+<script>
+  function handleCredentialResponse(response) {
+     const responsePayload = decodeJwtResponse(response.credential);
+
+     console.log("ID: " + responsePayload.sub);
+     console.log('Full Name: ' + responsePayload.name);
+     console.log('Given Name: ' + responsePayload.given_name);
+     console.log('Family Name: ' + responsePayload.family_name);
+     console.log("Image URL: " + responsePayload.picture);
+     console.log("Email: " + responsePayload.email);
+  }
+
+  function decodeJwtResponse(token) {
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  }
+</script>
  
 
 </html>

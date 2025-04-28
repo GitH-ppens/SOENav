@@ -148,3 +148,40 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
+
+app.post("/saveEvent", async (req, res) => {
+  const { eventName, eventDay, startTime, endTime, netID } = req.body;
+
+  if (!eventName || !eventDay || !startTime || !endTime || !netID) {
+    return res.status(400).json({ success: false, message: "Missing event fields" });
+  }
+
+  const query = `
+    INSERT INTO courseplanner_events (eventName, eventDay, startTime, endTime, netID)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [eventName, eventDay, startTime, endTime, netID], (err, result) => {
+    if (err) {
+      console.error("Error saving event:", err);
+      return res.status(500).json({ success: false, message: "Server error saving event" });
+    }
+    res.status(200).json({ success: true, message: "Event saved!" });
+  });
+});
+
+app.post("/getEvents", async (req, res) => {
+  const { netID } = req.body;
+
+  if (!netID) {
+    return res.status(400).json({ success: false, message: "Missing netID" });
+  }
+
+  db.query("SELECT * FROM courseplanner_events WHERE netID = ?", [netID], (err, results) => {
+    if (err) {
+      console.error("Error fetching events:", err);
+      return res.status(500).json({ success: false, message: "Server error fetching events" });
+    }
+    res.status(200).json(results);
+  });
+});

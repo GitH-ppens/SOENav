@@ -11,10 +11,28 @@
       padding: 0;
       background: #f8f9fa;
     }
+    .back-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #007bff;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    .back-button:hover {
+      background-color: #0056b3;
+    }
     .container {
       display: flex;
       max-width: 1200px;
-      margin: 20px auto;
+      margin: 60px auto 20px auto;
       padding: 20px;
       gap: 20px;
     }
@@ -99,6 +117,10 @@
   </style>
 </head>
 <body>
+
+<!-- Back Button -->
+<a href="Home/home.html" class="back-button">← Back</a>
+
 <div class="container">
   <div class="main-section">
     <h1>Notes</h1>
@@ -137,7 +159,6 @@
 
   <div id="advisorSection" class="card hidden"></div>
 </div>
-</div>
 
 <script>
   const allCourses = [
@@ -147,8 +168,6 @@
     "14:332:452", "14:332:434", "14:332:437"
   ];
 
-// TODO: add the student email from the login
-
   const userEmail = "student.name@rutgers.edu";
   const isAdvisor = false;
 
@@ -156,8 +175,6 @@
   const advisorSection = document.getElementById('advisorSection');
   const notificationList = document.getElementById('notificationList');
   const suggestionsBox = document.getElementById('autocompleteSuggestions');
-
-//TODO: add the advisor check
 
   if (isAdvisor) {
     document.getElementById("advisorTools").style.display = "block";
@@ -168,8 +185,6 @@
     const now = new Date();
     return now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-
-  // TODO: Implement backend save here (e.g., POST to /api/notes)
 
   function addNote() {
     const note = document.getElementById('studentNote').value.trim();

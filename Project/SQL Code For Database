@@ -5,7 +5,9 @@ CREATE TABLE CourseList( id INT AUTO_INCREMENT PRIMARY KEY,
                         CourseName char(25));
 CREATE TABLE Users( id INT AUTO_INCREMENT PRIMARY KEY,
 					StudentName char(40) NOT NULL,
-                    UserPassword char(10) NOT NULL); 
+                    UserPassword char(10) NOT NULL);
+ALTER TABLE Users ADD COLUMN student_id char(8);
+SELECT * FROM pastenrollments;    
 CREATE TABLE PastEnrollments( SchoolCode int,
 							  DepartmentCode int, 
 							  CourseCode int, 
@@ -31,3 +33,21 @@ CREATE TABLE Enrollments ( student_id INT,
 						   PRIMARY KEY (student_id, course_id),
 						   FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
 						   FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE);
+CREATE TABLE EngineeringMajors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    MajorName VARCHAR(100) NOT NULL,
+    DegreeType VARCHAR(20) DEFAULT 'B.S.' -- assuming all are Bachelor's unless specified later
+);
+INSERT INTO EngineeringMajors (MajorName)
+VALUES 
+('Aerospace Engineering'),
+('Applied Sciences in Engineering'),
+('Biomedical Engineering'),
+('Chemical and Biochemical Engineering'),
+('Civil and Environmental Engineering'),
+('Electrical and Computer Engineering'),
+('Environmental Engineering'),
+('Industrial and Systems Engineering'),
+('Materials Science and Engineering'),
+('Mechanical Engineering'),
+('Packaging Engineering');

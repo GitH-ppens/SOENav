@@ -7,21 +7,18 @@ const PORT = 3000;
 const path = require("path");
 const bodyParser = require("body-parser");
 
-
 app.use(cors());
 app.use(express.json());
-app.use(express.text());//plain texts
+app.use(express.text());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.resolve("")));
 
-// DB Connection
+// DataBase Connection
 const db = mysql.createConnection({
   host: "bmu76n1mf2sehxodofjl-mysql.services.clever-cloud.com",
   user: "udaban8ouzufgby5",
   password: "xH67BYKcnsZq9J0vUVvO",
   database: "bmu76n1mf2sehxodofjl",
-  //\c udaban8ouzufgby5@bmu76n1mf2sehxodofjl-mysql.services.clever-cloud.com
-  //USE bmu76n1mf2sehxodofjl
 });
 
 db.connect(err => {
@@ -76,7 +73,7 @@ app.post("/login", async (req, res) => {
 
     delete user.password;
     console.log(`${user.netID} logged in successfully`);
-    res.status(200).json(user); // sends user data
+    res.status(200).json(user);
   });
 });
 
@@ -88,12 +85,11 @@ app.post("/courseInfo", async (req, res) => {
   db.query("SELECT * FROM engineering_courses WHERE coursenum = ?", [course], async (err, results) => {
     if (err) return res.status(500).json({ message: "DB error" });
     if (results.length === 0){
-      return res.status(401).json({ message: "Invalid courseNum"  });
+      return res.status(401).json({ message: "Invalid courseNum" });
     }
-    
+
     const courseinfo = results[0];
-    
-    res.status(200).json(courseinfo); // sends user data
+    res.status(200).json(courseinfo);
   });
 });
 
@@ -106,12 +102,11 @@ app.post("/requirement", async (req, res) => {
     if (err) return res.status(500).json({ message: "DB error" });
     if (results.length === 0){
       console.log(`requested for: ${major}, instead of: `);
-      return res.status(404).json({ message: "Major not found"  });
+      return res.status(404).json({ message: "Major not found" });
     }
-    
+
     const majorinfo = results[0];
-    
-    res.status(200).json(majorinfo); // sends user data
+    res.status(200).json(majorinfo);
   });
 });
 
@@ -120,27 +115,27 @@ app.post("/saverequirements", async (req, res) => {
         INSERT INTO requirements
         (degPt, major, requirements, version)
         VALUES (?, ?, ?, ?)`;
-  
-  for(let obj in req.body){
-    const { degreePoint, program, requirements, version} =req.body[obj];//requirements is a list of objects
+
+  for (let obj in req.body) {
+    const { degreePoint, program, requirements, version } = req.body[obj];
     console.log(req.body[obj]);
 
     if (!degreePoint || !program || !requirements || !version) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
-  
-      db.query(
-        query,
-        [degreePoint, program, JSON.stringify(requirements), version],
-        (err, result) => {
-          if (err) {
-            console.error("Error inserting req:", err + degreePoint);
-            return res.status(500).json({ success: false, message: "Server error" });
-          }
+
+    db.query(
+      query,
+      [degreePoint, program, JSON.stringify(requirements), version],
+      (err, result) => {
+        if (err) {
+          console.error("Error inserting req:", err + degreePoint);
+          return res.status(500).json({ success: false, message: "Server error" });
         }
-      );
-    }
-    res.status(200).json({ success: true, message: "Req Inserted successfully!" }); 
+      }
+    );
+  }
+  res.status(200).json({ success: true, message: "Req Inserted successfully!" });
 });
 
 app.get("/", (req, res) => {
@@ -149,6 +144,7 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
 
+// Course Planner
 app.post("/saveEvent", async (req, res) => {
   const { eventName, eventDay, startTime, endTime, netID } = req.body;
 
@@ -158,8 +154,7 @@ app.post("/saveEvent", async (req, res) => {
 
   const query = `
     INSERT INTO courseplanner_events (eventName, eventDay, startTime, endTime, netID)
-    VALUES (?, ?, ?, ?, ?)
-  `;
+    VALUES (?, ?, ?, ?, ?)`;
 
   db.query(query, [eventName, eventDay, startTime, endTime, netID], (err, result) => {
     if (err) {
@@ -186,7 +181,6 @@ app.post("/getEvents", async (req, res) => {
   });
 });
 
-// Delete event from database
 app.post("/deleteEvent", async (req, res) => {
   const { eventName, eventDay, startTime, endTime, netID } = req.body;
 
@@ -195,9 +189,8 @@ app.post("/deleteEvent", async (req, res) => {
   }
 
   const query = `
-    DELETE FROM courseplanner_events 
-    WHERE eventName = ? AND eventDay = ? AND startTime = ? AND endTime = ? AND netID = ?
-  `;
+    DELETE FROM courseplanner_events
+    WHERE eventName = ? AND eventDay = ? AND startTime = ? AND endTime = ? AND netID = ?`;
 
   db.query(query, [eventName, eventDay, startTime, endTime, netID], (err, result) => {
     if (err) {
@@ -205,5 +198,39 @@ app.post("/deleteEvent", async (req, res) => {
       return res.status(500).json({ success: false, message: "Server error deleting event" });
     }
     res.status(200).json({ success: true, message: "Event deleted!" });
+  });
+});
+
+// Saving Notes
+app.post("/saveNote", async (req, res) => {
+  const { userEmail, note } = req.body;
+
+  if (!userEmail || !note) {
+    return res.status(400).json({ success: false, message: "Missing note fields" });
+  }
+
+  const query = `
+    INSERT INTO notes (user_email, note_text)
+    VALUES (?, ?)`;
+
+  db.query(query, [userEmail, note], (err, result) => {
+    if (err) {
+      console.error("Error saving note:", err);
+      return res.status(500).json({ success: false, message: "Server error saving note" });
+    }
+    res.status(200).json({ success: true, message: "Note saved!" });
+  });
+});
+
+// Loading Notes
+app.get("/getNotes", async (req, res) => {
+  const query = "SELECT * FROM notes ORDER BY created_at DESC";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching notes:", err);
+      return res.status(500).json({ success: false, message: "Server error fetching notes" });
+    }
+    res.status(200).json(results);
   });
 });

@@ -185,3 +185,25 @@ app.post("/getEvents", async (req, res) => {
     res.status(200).json(results);
   });
 });
+
+// Delete event from database
+app.post("/deleteEvent", async (req, res) => {
+  const { eventName, eventDay, startTime, endTime, netID } = req.body;
+
+  if (!eventName || !eventDay || !startTime || !endTime || !netID) {
+    return res.status(400).json({ success: false, message: "Missing event fields" });
+  }
+
+  const query = `
+    DELETE FROM courseplanner_events 
+    WHERE eventName = ? AND eventDay = ? AND startTime = ? AND endTime = ? AND netID = ?
+  `;
+
+  db.query(query, [eventName, eventDay, startTime, endTime, netID], (err, result) => {
+    if (err) {
+      console.error("Error deleting event:", err);
+      return res.status(500).json({ success: false, message: "Server error deleting event" });
+    }
+    res.status(200).json({ success: true, message: "Event deleted!" });
+  });
+});

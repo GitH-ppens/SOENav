@@ -99,10 +99,38 @@ function createEventBlock(eventName, eventDay, startTime, endTime) {
     eventBlock.style.width = `${width}px`;
     eventBlock.innerHTML = `
         ${eventName}
-        <span class="close-btn" onclick="this.parentElement.remove()">x</span>
+        <span class="close-btn">x</span>
     `;
 
     document.getElementById(eventDay).appendChild(eventBlock);
 
-    
+    // Attach click event to the X
+    const closeButton = eventBlock.querySelector('.close-btn');
+    closeButton.addEventListener('click', async function(event) {
+        event.stopPropagation(); // Stop event bubbling, just in case
+
+        const userData = JSON.parse(localStorage.getItem("soenav_userData"));
+        const netID = userData.netID;
+
+        try {
+            const response = await fetch('http://localhost:3000/deleteEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ eventName, eventDay, startTime, endTime, netID })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                eventBlock.remove(); // Only remove from screen if deleted successfully
+            } else {
+                console.error("Failed to delete event:", data.message);
+            }
+        } catch (err) {
+            console.error("Error deleting event:", err);
+        }
+    });
 }
+
+

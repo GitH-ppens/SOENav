@@ -79,6 +79,7 @@
       padding: 8px 0;
       position: relative;
       transition: background-color 0.3s ease;
+      word-break: break-word;
     }
     .note:hover {
       background-color: #fff6f6;
@@ -167,8 +168,11 @@
     "14:332:452", "14:332:434", "14:332:437"
   ];
 
-  const userEmail = "student.name@rutgers.edu";
+  let userEmail;
   const isAdvisor = false;
+
+  let userData = JSON.parse(localStorage.getItem("soenav_userData"));
+  userEmail = userData ? userData.email : "";
 
   const notesSection = document.getElementById('notesSection');
   const advisorSection = document.getElementById('advisorSection');
@@ -210,7 +214,11 @@
   // loadNotes() function
   async function loadNotes() {
     try {
-      const res = await fetch('http://localhost:3000/getNotes');
+      const res = await fetch('http://localhost:3000/getNotes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail })
+      });
       const notes = await res.json();
       notesSection.innerHTML = '';
       notes.forEach(noteObj => {

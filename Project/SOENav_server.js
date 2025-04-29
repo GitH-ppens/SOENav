@@ -223,10 +223,16 @@ app.post("/saveNote", async (req, res) => {
 });
 
 // Loading Notes
-app.get("/getNotes", async (req, res) => {
-  const query = "SELECT * FROM notes ORDER BY created_at DESC";
+app.post("/getNotes", async (req, res) => {
+  const { userEmail } = req.body;
 
-  db.query(query, (err, results) => {
+  if (!userEmail) {
+    return res.status(400).json({ success: false, message: "Missing user email" });
+  }
+
+  const query = "SELECT * FROM notes WHERE user_email = ? ORDER BY created_at DESC";
+
+  db.query(query, [userEmail], (err, results) => {
     if (err) {
       console.error("Error fetching notes:", err);
       return res.status(500).json({ success: false, message: "Server error fetching notes" });

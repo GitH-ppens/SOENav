@@ -92,6 +92,7 @@ h1 {
 }
 
 .event-form button {
+  margin: 5px 0px;
   width: 100%;
   padding: 10px;
   background-color: #ba2e2e;

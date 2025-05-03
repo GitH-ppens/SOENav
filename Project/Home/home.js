@@ -1,4 +1,3 @@
-//todo: I feel we need a unique identifier...not 'userData' since there can be conflict
 let user = localStorage.getItem("soenav_userData");
 let totalCourseGroups = 0;//All required courseGroups for major
 let completed = 0;//completed courses of requirements
@@ -34,10 +33,14 @@ document.getElementById("logout").addEventListener("click", () => {
 
 async function getCourseInfoFromServer(){
     for(let i of userData.coursesTaken){
+        if(i.match(/^([\d:]+)\s*:\s*(.*)$/))i=i.match(/^([\d:]+)\s*:\s*(.*)$/)[1].trim();//TechnicalElectives edge case(No courseNum)
+        else{
+            continue;
+        }
         const res = await fetch("http://localhost:3000/courseInfo", {
             method: "POST",
             headers: { "Content-Type": "text/plain" },
-            body: i.match(/^([\d:]+)\s*:\s*(.*)$/)[1].trim(),
+            body:  i,
         });
     
         const data = await res.json();
@@ -57,6 +60,7 @@ async function getCourseInfoFromServer(){
     document.getElementById("course-list-table").innerHTML = listContent;
 }
   
+let missingCourses = []//Creating a list for course planner
 async function getMajorRequirements(){
     const res = await fetch("http://localhost:3000/requirement", {
         method: "POST",
@@ -65,7 +69,6 @@ async function getMajorRequirements(){
     });
 
     const data = await res.json();
-    console.log(JSON.parse(data.requirements));//debugging...it works
     const REQS = JSON.parse(data.requirements);//REQS is an array of object(requirements)
     //Sort the Requirements into R1,R2,R3...Sort by reqID
     REQS.sort((a, b) => {
@@ -78,24 +81,31 @@ async function getMajorRequirements(){
     for (let requirement of REQS) {//(i.e object of list)You can add the req blocks here too
         let Rcontent = `<h4>${requirement.reqTitle}</h4>`;
         for (let courseGroup of requirement.courses) {
-            Rcontent += `\n${courseGroup}<br>`;//Change this and add the legend icons to each courses based on status.
             totalCourseGroups++;
         
             // Extract all course numbers from {course1,alt1,alt2,...}
             const courseNumbers = courseGroup.slice(1, -1).split(',').map(c => c.trim());
-            
+           
             // Check if any course in this group is taken
             const hasTaken = userData.coursesTaken.some(takenCourse => {
                 const takenNumber = takenCourse.split(' : ')[0].trim();
                 return courseNumbers.includes(takenNumber);
             });
         
-            if (hasTaken)completed++;
+            if (hasTaken){//Taken course
+                completed++;
+                Rcontent += `\n✔ ${courseGroup}<br>`;
+            }
+            else{//Not taken coourse
+                Rcontent += `\n✖ ${courseGroup}<br>`;
+                missingCourses.push(courseNumbers[0]);
+            }
         }
         document.getElementById('progress').insertAdjacentHTML("beforeend", `<div id=${requirement.reqID} class="semester-block ${requirement.reqID}">
             ${Rcontent}
           </div>`);
     }
+    localStorage.setItem("missingCourses", JSON.stringify(missingCourses));
     document.getElementById("remaining_courses").textContent = totalCourseGroups - completed;
     document.querySelector(".progress-bar").style.setProperty('--progress', `${((completed*100)/totalCourseGroups).toFixed(2)}%`)
     //Then manipulate the dom to display the degree requirements...Follow or improve on the example below.

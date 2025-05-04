@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Recommendations</title>
+  <link rel="stylesheet" href="home.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      color: #b8002e;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #b8002e;
+      color: white;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #990026;
+    }
+
+    .book {
+      margin-bottom: 20px;
+    }
+
+    .book img {
+      max-width: 100px;
+      border-radius: 5px;
+    }
+
+    .book strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #b8002e;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book Recommendations</h1>
+    <input type="text" id="courseInput" placeholder="Enter course name (e.g., Introduction to Algorithms)">
+    <button onclick="fetchBooks()">Search Books</button>
+
+    <div id="results"></div>
+
+    <a href="Home/home.html" class="back-link">&larr; Back to Dashboard</a>
+  </div>
+
+  <script>
+    async function fetchBooks() {
+      const course = document.getElementById('courseInput').value.trim();
+      if (!course) return;
+
+      const query = encodeURIComponent(course);
+      const url = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayResults(data.items || []);
+      } catch (err) {
+        document.getElementById('results').innerText = 'Error fetching books.';
+      }
+    }
+
+    function displayResults(books) {
+      const results = document.getElementById('results');
+      results.innerHTML = '';
+
+      if (!books.length) {
+        results.innerText = 'No books found.';
+        return;
+      }
+
+      books.slice(0, 5).forEach(book => {
+        const info = book.volumeInfo;
+        const title = info.title || 'Untitled';
+        const authors = info.authors ? info.authors.join(', ') : 'Unknown';
+        const img = info.imageLinks?.thumbnail || '';
+
+        const div = document.createElement('div');
+        div.className = 'book';
+        div.innerHTML = `
+          <strong>${title}</strong>
+          <em>${authors}</em><br>
+          ${img ? `<img src="${img}" alt="${title}">` : ''}
+          <hr>
+        `;
+        results.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

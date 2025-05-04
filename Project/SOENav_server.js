@@ -230,13 +230,26 @@ app.post("/getNotes", async (req, res) => {
     return res.status(400).json({ success: false, message: "Missing user email" });
   }
 
-  const query = "SELECT * FROM notes WHERE user_email = ? ORDER BY created_at DESC";
-
+  const query = "SELECT * FROM notes WHERE user_email = ? ORDER BY created_at DESC"
   db.query(query, [userEmail], (err, results) => {
     if (err) {
       console.error("Error fetching notes:", err);
       return res.status(500).json({ success: false, message: "Server error fetching notes" });
     }
     res.status(200).json(results);
+  });
+});
+
+// Delete Note
+app.delete("/deleteNote/:id", (req, res) => {
+  const noteId = req.params.id;
+
+  const query = "DELETE FROM notes WHERE id = ?";
+  db.query(query, [noteId], (err, result) => {
+    if (err) {
+      console.error("Error deleting note:", err);
+      return res.status(500).json({ success: false, message: "Failed to delete note" });
+    }
+    res.status(200).json({ success: true, message: "Note deleted successfully" });
   });
 });

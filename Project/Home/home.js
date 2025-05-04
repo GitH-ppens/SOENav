@@ -94,10 +94,10 @@ async function getMajorRequirements(){
         
             if (hasTaken){//Taken course
                 completed++;
-                Rcontent += `\n✔ ${courseGroup}<br>`;
+                Rcontent += `\n<span class='green'>✔</span> ${courseGroup}<br>`;
             }
             else{//Not taken coourse
-                Rcontent += `\n✖ ${courseGroup}<br>`;
+                Rcontent += `\n<span class='red'>✖</span> ${courseGroup}<br>`;
                 missingCourses.push(courseNumbers[0]);
             }
         }

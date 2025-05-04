@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <title>SOENav</title>
-  <!-- Font Awesome Library -->
+  <!-- Font Library -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
   integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
   crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="home.css"><!--copy  the  style code to the home.css-->
+    <link rel="stylesheet" href="home.css">
   <style>
     /* Basic resets */
    
@@ -32,9 +32,10 @@
     <a href="#plcourses" class="nav-link"><i class="fas fa-book"></i> <span>My Planned Courses</span></a>
     <a href="#courseList" class="nav-link"><i class="fas fa-clipboard-list"></i> <span>My Course List</span></a>
     <a href="#progress" class="nav-link"><i class="fas fa-sticky-note"></i> <span>Requirement Progress</span></a>
+    <a href="../BOOK_RECOMMENDATIONS.html" class="nav-link">
+      <i class="fas fa-book-open"></i> <span>Book Recommendations</span>
+    </a>    
     <a class="nav-link" href="#" onclick="window.open('https://www.ratemyprofessors.com', '_blank', 'width=1000,height=800'); return false;" target="" rel="noopener noreferrer"><i class="fas fa-chalkboard-teacher"></i> <span>Rate My Professor</span></a>
-    
-    <!-- Add more sidebar links as needed -->
   </div>
 
   <!-- Main content -->
@@ -67,7 +68,6 @@
     </div>
 
     <!-- My Details Section -->
-    <!-- My Details Section -->
     <div class="dn-section Details" id="details">
       <h2>My Details</h2>
 
@@ -80,13 +80,13 @@
     </div>
 
 
-    <!-- My Planned Courses (empty) -->
+    <!-- My Planned Courses -->
     <div class="dn-section plannedcourses" id="plcourses">
       <h2>My Planned Courses</h2>
       <p>You have <span id="js-pple">0 </span>courses in your course plan.</p>
     </div>
 
-    <!--David and Farah's CourseList-->
+    <!--CourseList-->
     <div class="dn-section course-list" id="courseList">
       <h2>My Course List</h2>
       <table>
@@ -135,11 +135,7 @@
         </tbody>
       </table>
       <br>
-      <!--Remember that there's alternate courses too-->
-
     </div>
-
-    <!--Farah, your template here. How you want the course requirements for major to appear here. Later on, JS and HTML will edit the DOM later-->
     <div class="dn-section requirements" id="progress">
       <div class="card legend">
         <h2>Legend</h2>
@@ -153,8 +149,6 @@
       <h2>My Progress</h2>
       <span class="progress-bar" style="--progress: 33%"></span>
       <p>You need <span id="remaining_courses">x</span> more courses to get your degree.</p>
-      <!--Remember that there's alternate courses too: Change className, I'm not creative-->
-      <!--JS will get requirements by major and update..then use the user's course list to mark at green,yellow,...-->
     </div>
 
     <!-- QUESTIONS / Contact Info -->
@@ -193,8 +187,6 @@
   </script>
   <script src="home.js"></script>
   <script>
-    // Check for login data: It was redundant..You already made the call in js, and there was errors in the console
-
   </script>  
 </body>
 </html>

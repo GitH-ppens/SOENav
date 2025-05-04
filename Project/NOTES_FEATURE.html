@@ -213,24 +213,78 @@
 
   // loadNotes() function
   async function loadNotes() {
-    try {
-      const res = await fetch('http://localhost:3000/getNotes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userEmail })
-      });
-      const notes = await res.json();
-      notesSection.innerHTML = '';
-      notes.forEach(noteObj => {
-        const p = document.createElement('p');
-        p.className = 'note';
-        p.innerHTML = `${noteObj.note_text}<span class="meta">— ${noteObj.user_email}, ${new Date(noteObj.created_at).toLocaleString()}</span>`;
-        notesSection.appendChild(p);
-      });
-    } catch (err) {
-      console.error('Error loading notes:', err);
-    }
+  try {
+    const res = await fetch('http://localhost:3000/getNotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userEmail })
+    });
+
+    const notes = await res.json();
+
+    notesSection.innerHTML = '';
+
+    notes.forEach(noteObj => {
+      // Create outer container
+      const noteDiv = document.createElement('div');
+      noteDiv.className = 'note';
+      noteDiv.id = `note-${noteObj.id}`;
+
+      // Create note text
+      const noteText = document.createElement('div');
+      noteText.innerHTML = `
+        ${noteObj.note_text}
+        <span class="meta">— ${noteObj.user_email}, ${new Date(noteObj.created_at).toLocaleString()}</span>
+      `;
+
+      // Create delete button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = "Delete";
+      deleteBtn.style.marginLeft = "10px";
+      deleteBtn.onclick = () => deleteNote(noteObj.id);
+
+      // Add styling
+      deleteBtn.style.position = "relative";
+      deleteBtn.style.zIndex = "1000";
+      deleteBtn.style.backgroundColor = "#d50032";
+      deleteBtn.style.color = "#fff";
+      deleteBtn.style.padding = "6px 12px";
+      deleteBtn.style.border = "none";
+      deleteBtn.style.borderRadius = "4px";
+      deleteBtn.style.cursor = "pointer";
+
+
+
+      // Layout container
+      const flexBox = document.createElement('div');
+      flexBox.style.display = "flex";
+      flexBox.style.justifyContent = "space-between";
+      flexBox.style.alignItems = "center";
+
+      flexBox.appendChild(noteText);
+      flexBox.appendChild(deleteBtn);
+
+      noteDiv.appendChild(flexBox);
+      notesSection.appendChild(noteDiv);
+    });
+  } catch (err) {
+    console.error('Error loading notes:', err);
   }
+}
+
+function deleteNote(noteId) {
+  fetch(`http://localhost:3000/deleteNote/${noteId}`, { method: "DELETE" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      }
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+    });
+}
+
 
   function addAdvisorNote() {
     const name = document.getElementById('advisorName').value.trim();

@@ -60,6 +60,10 @@ async function getCourseInfoFromServer(){
     document.getElementById("course-list-table").innerHTML = listContent;
 }
   
+function openTechNews() {
+    window.open("tech_news.html", "_blank", "width=1000,height=800");
+  }  
+
 let missingCourses = []//Creating a list for course planner
 async function getMajorRequirements(){
     const res = await fetch("http://localhost:3000/requirement", {

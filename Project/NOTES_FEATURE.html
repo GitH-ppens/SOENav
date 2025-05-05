@@ -55,7 +55,9 @@
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 4px;
+      box-sizing: border-box; 
     }
+
     .card {
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -128,32 +130,33 @@
 
     <h2>Shared Notes</h2>
     <textarea id="studentNote" rows="4" placeholder="Add a note to discuss with classmates or advisors..."></textarea>
+
+    <select id="noteCategory">
+      <option value="">Select category...</option>
+      <option value="Reminder">Reminder</option>
+      <option value="Course Planning">Course Planning</option>
+      <option value="Advising">Advising</option>
+      <option value="Other">Other</option>
+    </select>
+
     <button id="addNoteBtn" onclick="addNote()">Add Note</button>
+
+    <!-- Error message -->
+    <div id="errorMsg" style="color: #d50032; display: none; font-weight: bold;"></div>
+
+
+  <!-- Moved Saved Notes Section -->
+  <div class="card" style="margin-top: 20px;">
+    <h2>Saved Notes</h2>
+    <div id="notesSection"></div>
+    <button onclick="toggleSaved('notesSection')">Toggle Saved Notes</button>
+  </div>
 
     <div id="advisorTools">
       <h2>Advisor Suggestions</h2>
       <input type="text" id="advisorName" placeholder="Advisor's Name">
       <textarea id="advisorNote" rows="3" placeholder="Advisor's suggestion..."></textarea>
       <button onclick="addAdvisorNote()">Submit Suggestion</button>
-    </div>
-
-    <h2>Class Availability Notifications</h2>
-    <input type="text" id="notifyClass" placeholder="Enter course code (e.g., 14:332:221)" oninput="suggestCourses()">
-    <div id="autocompleteSuggestions" class="autocomplete-suggestions"></div>
-    <button onclick="subscribeNotification()">Notify Me When Available</button>
-  </div>
-
-  <div class="sidebar">
-    <div class="card">
-      <h2>Saved Notes</h2>
-      <div id="notesSection"></div>
-      <button onclick="toggleSaved('notesSection')">Toggle Saved Notes</button>
-    </div>
-
-    <div class="card">
-      <h2>Notifications</h2>
-      <div id="notificationList"></div>
-      <button onclick="toggleSaved('notificationList')">Toggle Saved Notifications</button>
     </div>
   </div>
 
@@ -190,29 +193,55 @@
   }
 
   async function addNote() {
-    const note = document.getElementById('studentNote').value.trim();
-    if (note) {
-      try {
-        await fetch('http://localhost:3000/saveNote', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userEmail: userEmail,
-            note: note
-          })
-        });
-        document.getElementById('studentNote').value = '';
-        await loadNotes();
-      } catch (err) {
-        console.error('Error saving note:', err);
-      }
-    }
+  const note = document.getElementById('studentNote').value.trim();
+  const category = document.getElementById('noteCategory').value;
+  const errorMsg = document.getElementById('errorMsg');
+
+  // Shows an error if note is left  blank
+  if (!note) {
+    errorMsg.textContent = 'Please enter a note.';
+    errorMsg.style.display = 'block';
+    setTimeout(() => {
+      errorMsg.style.display = 'none';
+    }, 5000);
+    return;
   }
 
-  // loadNotes() function
-  async function loadNotes() {
+  // Shows an error if no category is selected
+  if (!category) {
+    errorMsg.textContent = 'Please select a category.';
+    errorMsg.style.display = 'block';
+    setTimeout(() => {
+      errorMsg.style.display = 'none';
+    }, 5000);
+    return;
+  }
+
+  try {
+    await fetch('http://localhost:3000/saveNote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userEmail: userEmail,
+        note: note,
+        category: category
+      })
+    });
+
+    document.getElementById('studentNote').value = '';
+    document.getElementById('noteCategory').value = '';
+    await loadNotes();
+  } catch (err) {
+    console.error('Error saving note:', err);
+  }
+}
+
+
+
+
+async function loadNotes() {
   try {
     const res = await fetch('http://localhost:3000/getNotes', {
       method: 'POST',
@@ -221,56 +250,28 @@
     });
 
     const notes = await res.json();
-
     notesSection.innerHTML = '';
 
     notes.forEach(noteObj => {
-      // Create outer container
       const noteDiv = document.createElement('div');
-      noteDiv.className = 'note';
-      noteDiv.id = `note-${noteObj.id}`;
+      noteDiv.className = 'note-card';
 
-      // Create note text
-      const noteText = document.createElement('div');
-      noteText.innerHTML = `
-        ${noteObj.note_text}
-        <span class="meta">— ${noteObj.user_email}, ${new Date(noteObj.created_at).toLocaleString()}</span>
+      noteDiv.innerHTML = `
+        <div class="note-content">
+          <strong>Category:</strong> ${noteObj.category || 'Uncategorized'}
+          <p>${noteObj.note_text}</p>
+          <small class="meta">— ${noteObj.user_email}, ${new Date(noteObj.created_at).toLocaleString()}</small>
+        </div>
+        <button class="delete-btn" onclick="deleteNote(${noteObj.id})">Delete</button>
       `;
 
-      // Create delete button
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = "Delete";
-      deleteBtn.style.marginLeft = "10px";
-      deleteBtn.onclick = () => deleteNote(noteObj.id);
-
-      // Add styling
-      deleteBtn.style.position = "relative";
-      deleteBtn.style.zIndex = "1000";
-      deleteBtn.style.backgroundColor = "#d50032";
-      deleteBtn.style.color = "#fff";
-      deleteBtn.style.padding = "6px 12px";
-      deleteBtn.style.border = "none";
-      deleteBtn.style.borderRadius = "4px";
-      deleteBtn.style.cursor = "pointer";
-
-
-
-      // Layout container
-      const flexBox = document.createElement('div');
-      flexBox.style.display = "flex";
-      flexBox.style.justifyContent = "space-between";
-      flexBox.style.alignItems = "center";
-
-      flexBox.appendChild(noteText);
-      flexBox.appendChild(deleteBtn);
-
-      noteDiv.appendChild(flexBox);
       notesSection.appendChild(noteDiv);
     });
   } catch (err) {
     console.error('Error loading notes:', err);
   }
 }
+
 
 function deleteNote(noteId) {
   fetch(`http://localhost:3000/deleteNote/${noteId}`, { method: "DELETE" })

@@ -201,19 +201,18 @@ app.post("/deleteEvent", async (req, res) => {
   });
 });
 
-// Saving Notes
 app.post("/saveNote", async (req, res) => {
-  const { userEmail, note } = req.body;
+  const { userEmail, note, category } = req.body;
 
-  if (!userEmail || !note) {
+  if (!userEmail || !note || !category) {
     return res.status(400).json({ success: false, message: "Missing note fields" });
   }
 
   const query = `
-    INSERT INTO notes (user_email, note_text)
-    VALUES (?, ?)`;
+    INSERT INTO notes (user_email, note_text, category)
+    VALUES (?, ?, ?)`;
 
-  db.query(query, [userEmail, note], (err, result) => {
+  db.query(query, [userEmail, note, category], (err, result) => {
     if (err) {
       console.error("Error saving note:", err);
       return res.status(500).json({ success: false, message: "Server error saving note" });
@@ -221,6 +220,7 @@ app.post("/saveNote", async (req, res) => {
     res.status(200).json({ success: true, message: "Note saved!" });
   });
 });
+
 
 // Loading Notes
 app.post("/getNotes", async (req, res) => {

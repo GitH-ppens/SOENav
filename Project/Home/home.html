@@ -94,16 +94,6 @@
     </div>
 
 
-
-
-    <select id="majorSelect">
-      <option value="">Select your major</option>
-      <option value="Computer Engineering">Computer Engineering</option>
-      <option value="Mechanical Engineering">Mechanical Engineering</option>
-      <!-- add more majors -->
-    </select>
-    
-
     <!--David and Farah's CourseList-->
 
     <div class="dn-section course-list" id="courseList">
@@ -117,42 +107,40 @@
             <th>Prerequisite</th>
             <th>Prerequisite For</th>
             <th>Credits</th>
-            <th>Professor</th>
-            <th>Rating</th>
           </tr>
         </thead>
         <tbody id="course-list-table">
-          <tr><td>General Chemistry for Engineers</td><td>01:160:159</td><td>Fall</td><td>None</td><td>Introduction to Experimentation</td><td>N/A</td></tr>
-          <tr><td>Introduction to Experimentation</td><td>14:440:127</td><td>Fall</td><td>General Chemistry</td><td>Principles of EE I</td><td>N/A</td></tr>
-          <tr><td>Calculus I</td><td>01:640:151</td><td>Fall</td><td>Placement or Precalculus</td><td>Calculus II</td><td>N/A</td></tr>
-          <tr><td>Calculus II</td><td>01:640:152</td><td>Spring</td><td>Calculus I</td><td>Multivariable Calculus</td><td>N/A</td></tr>
-          <tr><td>Multivariable Calculus</td><td>01:640:251</td><td>Fall</td><td>Calculus II</td><td>Differential Equations</td><td>N/A</td></tr>
-          <tr><td>Differential Equations</td><td>01:640:244</td><td>Spring</td><td>Multivariable Calculus</td><td>Linear Systems & Signals</td><td>N/A</td></tr>
-          <tr><td>Analytical Physics IA</td><td>01:750:123</td><td>Fall</td><td>Calculus I</td><td>Analytical Physics IB</td><td>N/A</td></tr>
-          <tr><td>Analytical Physics IB</td><td>01:750:124</td><td>Spring</td><td>Physics IA</td><td>Analytical Physics IIA</td><td>N/A</td></tr>
-          <tr><td>Analytical Physics IIA</td><td>01:750:227</td><td>Fall</td><td>Physics IB</td><td>Analytical Physics IIB</td><td>N/A</td></tr>
-          <tr><td>Analytical Physics II Lab</td><td>01:750:229</td><td>Fall</td><td>Physics IIA</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Engineering Mechanics: Statics</td><td>14:440:201</td><td>Spring</td><td>Physics IB</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Introduction to Computers for Engineers</td><td>14:440:127</td><td>Spring</td><td>None</td><td>Digital Logic Design</td><td>N/A</td></tr>
-          <tr><td>Principles of Electrical Engineering I</td><td>14:332:221</td><td>Fall</td><td>Intro to Experimentation</td><td>Principles of EE II</td><td>N/A</td></tr>
-          <tr><td>Principles of EE I Lab</td><td>14:332:222</td><td>Fall</td><td>Concurrent with EE I</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Principles of Electrical Engineering II</td><td>14:332:223</td><td>Spring</td><td>EE I</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Principles of EE II Lab</td><td>14:332:224</td><td>Spring</td><td>Concurrent with EE II</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Digital Logic Design</td><td>14:332:231</td><td>Fall</td><td>Intro to Computers</td><td>Computer Architecture</td><td>N/A</td></tr>
-          <tr><td>Digital Logic Design Lab</td><td>14:332:232</td><td>Fall</td><td>Concurrent with Logic Design</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Computer Architecture</td><td>14:332:331</td><td>Fall</td><td>Digital Logic Design</td><td>Digital System Design</td><td>N/A</td></tr>
-          <tr><td>Computer Architecture Lab</td><td>14:332:332</td><td>Fall</td><td>Concurrent with Comp Arch</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Linear Systems & Signals</td><td>14:332:345</td><td>Fall</td><td>Differential Equations</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Programming Methodology I</td><td>01:198:111</td><td>Spring</td><td>None</td><td>Programming Methodology II</td><td>N/A</td></tr>
-          <tr><td>Programming Methodology II</td><td>01:198:112</td><td>Fall</td><td>Prog. Methodology I</td><td>Software Engineering</td><td>N/A</td></tr>
-          <tr><td>Software Engineering</td><td>01:198:213</td><td>Spring</td><td>Prog. Methodology II</td><td>Capstone Design</td><td>N/A</td></tr>
-          <tr><td>Discrete Mathematics</td><td>01:198:205</td><td>Spring</td><td>None</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Introduction to Computer Systems</td><td>01:198:211</td><td>Spring</td><td>Prog. Methodology II</td><td>None</td><td>N/A</td></tr>
-          <tr><td>Professionalism and Ethics</td><td>14:440:403</td><td>Spring</td><td>Junior Standing</td><td>Capstone Design</td><td>N/A</td></tr>
-          <tr><td>Engineering Economics</td><td>14:540:343</td><td>Spring</td><td>Junior Standing</td><td>Capstone Design</td><td>N/A</td></tr>
-          <tr><td>Digital System Design</td><td>14:332:432</td><td>Fall</td><td>Computer Architecture</td><td>Capstone Design</td><td>N/A</td></tr>
-          <tr><td>Introduction to Capstone Design</td><td>14:332:448</td><td>Fall</td><td>Senior Standing</td><td>Capstone Design</td><td>N/A</td></tr>
-          <tr><td>Capstone Design in ECE</td><td>14:332:449</td><td>Spring</td><td>Digital System Design, Software Engineering</td><td>Graduation Requirement</td><td>N/A</td></tr>
+          <tr><td>General Chemistry for Engineers</td><td>01:160:159</td><td>Fall</td><td>None</td><td>Introduction to Experimentation</td><td>3</td></tr>
+          <tr><td>Introduction to Experimentation</td><td>14:440:127</td><td>Fall</td><td>General Chemistry</td><td>Principles of EE I</td><td>1</td></tr>
+          <tr><td>Calculus I</td><td>01:640:151</td><td>Fall</td><td>Placement or Precalculus</td><td>Calculus II</td><td>4</td></tr>
+          <tr><td>Calculus II</td><td>01:640:152</td><td>Spring</td><td>Calculus I</td><td>Multivariable Calculus</td><td>4</td></tr>
+          <tr><td>Multivariable Calculus</td><td>01:640:251</td><td>Fall</td><td>Calculus II</td><td>Differential Equations</td><td>4</td></tr>
+          <tr><td>Differential Equations</td><td>01:640:244</td><td>Spring</td><td>Multivariable Calculus</td><td>Linear Systems & Signals</td><td>3</td></tr>
+          <tr><td>Analytical Physics IA</td><td>01:750:123</td><td>Fall</td><td>Calculus I</td><td>Analytical Physics IB</td><td>2</td></tr>
+          <tr><td>Analytical Physics IB</td><td>01:750:124</td><td>Spring</td><td>Physics IA</td><td>Analytical Physics IIA</td><td>2</td></tr>
+          <tr><td>Analytical Physics IIA</td><td>01:750:227</td><td>Fall</td><td>Physics IB</td><td>Analytical Physics IIB</td><td>3</td></tr>
+          <tr><td>Analytical Physics II Lab</td><td>01:750:229</td><td>Fall</td><td>Physics IIA</td><td>None</td><td>1</td></tr>
+          <tr><td>Engineering Mechanics: Statics</td><td>14:440:201</td><td>Spring</td><td>Physics IB</td><td>None</td><td>3</td></tr>
+          <tr><td>Introduction to Computers for Engineers</td><td>14:440:127</td><td>Spring</td><td>None</td><td>Digital Logic Design</td><td>3</td></tr>
+          <tr><td>Principles of Electrical Engineering I</td><td>14:332:221</td><td>Fall</td><td>Intro to Experimentation</td><td>Principles of EE II</td><td>3</td></tr>
+          <tr><td>Principles of EE I Lab</td><td>14:332:222</td><td>Fall</td><td>Concurrent with EE I</td><td>None</td><td>1</td></tr>
+          <tr><td>Principles of Electrical Engineering II</td><td>14:332:223</td><td>Spring</td><td>EE I</td><td>None</td><td>3</td></tr>
+          <tr><td>Principles of EE II Lab</td><td>14:332:224</td><td>Spring</td><td>Concurrent with EE II</td><td>None</td><td>1</td></tr>
+          <tr><td>Digital Logic Design</td><td>14:332:231</td><td>Fall</td><td>Intro to Computers</td><td>Computer Architecture</td><td>3</td></tr>
+          <tr><td>Digital Logic Design Lab</td><td>14:332:232</td><td>Fall</td><td>Concurrent with Logic Design</td><td>None</td><td>1</td></tr>
+          <tr><td>Computer Architecture</td><td>14:332:331</td><td>Fall</td><td>Digital Logic Design</td><td>Digital System Design</td><td>3</td></tr>
+          <tr><td>Computer Architecture Lab</td><td>14:332:332</td><td>Fall</td><td>Concurrent with Comp Arch</td><td>None</td><td>1</td></tr>
+          <tr><td>Linear Systems & Signals</td><td>14:332:345</td><td>Fall</td><td>Differential Equations</td><td>None</td><td>3</td></tr>
+          <tr><td>Programming Methodology I</td><td>01:198:111</td><td>Spring</td><td>None</td><td>Programming Methodology II</td><td>3</td></tr>
+          <tr><td>Programming Methodology II</td><td>01:198:112</td><td>Fall</td><td>Prog. Methodology I</td><td>Software Engineering</td><td>3</td></tr>
+          <tr><td>Software Engineering</td><td>01:198:213</td><td>Spring</td><td>Prog. Methodology II</td><td>Capstone Design</td><td>4</td></tr>
+          <tr><td>Discrete Mathematics</td><td>01:198:205</td><td>Spring</td><td>None</td><td>None</td><td>4</td></tr>
+          <tr><td>Introduction to Computer Systems</td><td>01:198:211</td><td>Spring</td><td>Prog. Methodology II</td><td>None</td><td>3</td></tr>
+          <tr><td>Professionalism and Ethics</td><td>14:440:403</td><td>Spring</td><td>Junior Standing</td><td>Capstone Design</td><td>1</td></tr>
+          <tr><td>Engineering Economics</td><td>14:540:343</td><td>Spring</td><td>Junior Standing</td><td>Capstone Design</td><td>3</td></tr>
+          <tr><td>Digital System Design</td><td>14:332:432</td><td>Fall</td><td>Computer Architecture</td><td>Capstone Design</td><td>3</td></tr>
+          <tr><td>Introduction to Capstone Design</td><td>14:332:448</td><td>Fall</td><td>Senior Standing</td><td>Capstone Design</td><td>1</td></tr>
+          <tr><td>Capstone Design in ECE</td><td>14:332:449</td><td>Spring</td><td>Digital System Design, Software Engineering</td><td>Graduation Requirement</td><td>3</td></tr>
         </tbody>
       </table>
       <br>

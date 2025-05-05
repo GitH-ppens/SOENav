@@ -18,16 +18,21 @@
     height: 100vh;
     background-color: #cc0033; /* Rutgers red */
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     transition: width 0.3s ease-in-out;
   }
+  
   .sidebar.collapsed {
     width: 60px;
   }
+  
   .sidebar.collapsed .sidebar-brand,
   .sidebar.collapsed .nav-link span {
     display: none;
   }
+  
   .sidebar-brand {
     display: flex;
     align-items: center;
@@ -36,9 +41,7 @@
     font-size: 1.25rem;
     text-decoration: none;
   }
-  .sidebar-brand i {
-    margin-right: 0.5rem;
-  }
+  
   .nav-link {
     display: flex;
     align-items: center;
@@ -48,13 +51,38 @@
     margin: 0.5rem 0;
     transition: color 0.2s ease-in-out;
   }
+  
   .nav-link i {
     margin-right: 0.5rem;
     margin-top: 0.5rem;
   }
+  
   .nav-link:hover {
     color: #fff;
   }
+  
+  /* Weather at bottom */
+  .weather-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto; /* 🔥 This pushes it to the bottom */
+    padding-top: 20px;
+  }
+  
+  #weather-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+  
+  #temperature-fah {
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+  }
+  
 
   /* Main content area */
   .main-content {

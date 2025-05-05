@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Book Finder</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .back-button {
+      margin: 20px;
+      padding: 10px 20px;
+      background-color: #d50032;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .search-box {
+      margin: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .results {
+      margin: 20px;
+    }
+  .back-button {
+    display: inline-block;
+    margin: 20px 20px 0 20px;
+    padding: 10px 20px;
+    background-color: #d50032;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  </style>
+</head>
+<body>
+  <a class="back-button" href="Home/home.html">Back to Dashboard</a>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Enter book title..." />
+    <button onclick="searchBooks()">Search</button>
+  </div>
+  <div class="results" id="results"></div>
+  <script src="bookfinder.js"></script>
+</body>
+</html>

@@ -67,13 +67,12 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-top: auto; /* 🔥 This pushes it to the bottom */
-    padding-top: 20px;
+    margin-top: auto;
   }
   
   #weather-image {
-    width: 50px;
-    height: 50px;
+    width: 90px;
+    height: 90px;
     object-fit: contain;
   }
   

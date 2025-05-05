@@ -253,3 +253,11 @@ app.delete("/deleteNote/:id", (req, res) => {
     res.status(200).json({ success: true, message: "Note deleted successfully" });
   });
 });
+
+app.get('/Project/bookfinder.html', (req, res) => {
+  res.sendFile(__dirname + '/Project/bookfinder.html');
+});
+
+app.get('/Project/bookfinder.js', (req, res) => {
+  res.sendFile(__dirname + '/Project/bookfinder.js');
+});

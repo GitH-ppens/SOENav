@@ -1,6 +1,6 @@
 function getCurriculumByMajor(major) {
     const curricula = {
-        "ComputerEngineeringCurriculum": {
+        "Computer Engineering": {
           "FreshmanYear": {
             "Fall": [
               { "courseNumber": "14:440:101", "courseName": "Introduction to Data-Driven Design for Engineering Applications", "credits": 2, "term": "Fall" },
@@ -74,7 +74,7 @@ function getCurriculumByMajor(major) {
           }
         },
 
-        "ElectricalEngineeringCurriculum": {
+        "Electrical Engineering": {
             "FreshmanYear": {
             "Fall": [
                 { "courseNumber": "14:440:101", "courseName": "Introduction to Data-Driven Design for Engineering Applications", "credits": 2, "term": "Fall" },
@@ -150,7 +150,7 @@ function getCurriculumByMajor(major) {
             }
         },
 
-        "AerospaceEngineeringCurriculum": {
+        "Aerospace Engineering": {
             "FreshmanYear": {
               "Fall": [
                 { "courseNumber": "14:440:101", "courseName": "Introduction to Data-Driven Design for Engineering Applications", "credits": 2, "term": "Fall" },
@@ -219,7 +219,7 @@ function getCurriculumByMajor(major) {
               ]
             }
           },
-        "AppliedSciencesInEngineeringCurriculum": {
+        "Applied Sciences In Engineering": {
             "FreshmanYear": {
             "Fall": [
                 { "courseNumber": "14:440:101", "courseName": "Intro to Data-Driven Design", "credits": 2, "term": "Fall" },
@@ -285,7 +285,7 @@ function getCurriculumByMajor(major) {
             }
         },
 
-        "BiomedicalEngineeringCurriculum": {
+        "Biomedical Engineering": {
             "FreshmanYear": {
             "Fall": [
                 { "courseNumber": "14:440:101", "courseName": "Intro to Data-Driven Design", "credits": 2, "term": "Fall" },

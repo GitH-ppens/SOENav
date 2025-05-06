@@ -1,0 +1,145 @@
+//the stuff I would put into the .env file 
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+SESSION_SECRET=
+CALLBACK_URL=http://localhost:3000/auth/google/callback
+
+// code I tried to add to package.json — basic project config with all needed dependencies for auth and API calls
+{
+  "name": "soenav-calendar",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "googleapis": "^130.0.0",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}
+
+// code for server.js, backend for Google OAuth login and Calendar API event creation
+
+const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
+const { google } = require('googleapis');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+require('dotenv').config();
+
+const app = express();
+app.use(express.static('public')); // serve frontend files from /public folder
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Google login strategy config
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.CALLBACK_URL,
+  scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar.events']
+}, (accessToken, refreshToken, profile, done) => {
+  profile.accessToken = accessToken;
+  return done(null, profile);
+}));
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
+
+// starts login flow
+app.get('/auth/google', passport.authenticate('google'));
+
+// callback after Google login
+app.get('/auth/google/callback', passport.authenticate('google', {
+  failureRedirect: '/'
+}), (req, res) => {
+  res.redirect('/calendar.html'); // redirect to page with calendar button
+});
+
+// route to insert a calendar event
+app.get('/api/add-event', async (req, res) => {
+  if (!req.user || !req.user.accessToken) {
+    return res.status(401).send("You're not logged in.");
+  }
+
+  const oauth2Client = new google.auth.OAuth2();
+  oauth2Client.setCredentials({ access_token: req.user.accessToken });
+
+  const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+  const event = {
+    summary: 'Test Event from SOENav',
+    description: 'Added using the Calendar API.',
+    start: {
+      dateTime: '2025-09-01T10:00:00-04:00',
+      timeZone: 'America/New_York'
+    },
+    end: {
+      dateTime: '2025-09-01T11:00:00-04:00',
+      timeZone: 'America/New_York'
+    }
+  };
+
+  try {
+    const response = await calendar.events.insert({
+      calendarId: 'primary',
+      resource: event
+    });
+    res.send(`✅ Event created: <a href="${response.data.htmlLink}" target="_blank">View it</a>`);
+  } catch (err) {
+    console.error("Failed to create event:", err);
+    res.status(500).send("Error creating event.");
+  }
+});
+
+// start the server
+app.listen(3000, () => {
+  console.log("SOENav backend is live at http://localhost:3000");
+});
+
+
+//attempt at html code for google calendar
+<!-- public/calendar.html — frontend page with login + "Add to Calendar" button -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calendar Integration</title>
+</head>
+<body>
+  <h1>SOENav + Google Calendar</h1>
+
+  <!-- Login button -->
+  <a href="/auth/google">
+    <button>Log in with Google</button>
+  </a>
+
+  <br><br>
+
+  <!-- Trigger event insertion -->
+  <button onclick="addEvent()">Add Sample Event to Google Calendar</button>
+
+  <div id="result" style="margin-top: 1rem;"></div>
+
+  <script>
+    async function addEvent() {
+      const res = await fetch('/api/add-event');
+      const text = await res.text();
+      document.getElementById('result').innerHTML = text;
+    }
+  </script>
+</body>
+</html>
+

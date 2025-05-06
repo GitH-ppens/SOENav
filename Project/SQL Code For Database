@@ -287,36 +287,3 @@ CREATE TABLE MechanicalEngineeringStudents (
     FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (major_id) REFERENCES MechanicalEngineeringRequirements(id) ON DELETE CASCADE
 );
-
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{01:640:421}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:650:351}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:650:312}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:650:350}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:650:431}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:650:467}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:650:481}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R7', 'Senior Year - Fall', '{MAE Departmental Electives}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R7', 'Senior Year - Fall', '{MAE Technical Electives (14:332:231)}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Engineering General Electives (01:355:100, 01:640:250)}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:650:291}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:650:361}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:750:228, Alternate Physics IIB Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:750:230, Alternative Analytical Physics II Laboratory Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:650:342}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:650:439}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:635:407}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:650:432, 14:650:433, 14:650:435}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:650:468}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:650:401}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R8', 'Senior Year - Spring', '{MAE Departmental Electives}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R8', 'Senior Year - Spring', '{MAE Technical Electives (14:332:252)}');

@@ -1,58 +1,104 @@
-CREATE TABLE CourseList( id INT AUTO_INCREMENT PRIMARY KEY,
-						SchoolCode int,
-						DepartmentCode int, 
-                        CourseCode int, 
-                        CourseName char(25));
-CREATE TABLE Users( id INT AUTO_INCREMENT PRIMARY KEY,
-					StudentName char(40) NOT NULL,
-                    UserPassword char(10) NOT NULL);
-ALTER TABLE Users ADD COLUMN student_id char(8);
-SELECT * FROM MechanicalEngineeringRequirements;    
-CREATE TABLE PastEnrollments( SchoolCode int,
-							  DepartmentCode int, 
-							  CourseCode int, 
-							  CourseName char(25),
-                              student_id INT,
-						      course_id INT,
-							  PRIMARY KEY (student_id, course_id),
-							  FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
-							  FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE,
-                              Grade char(3));
-CREATE TABLE PlannedCourses( id INT AUTO_INCREMENT PRIMARY KEY,
-							 SchoolCode int,
-							 DepartmentCode int, 
-							 CourseCode int, 
-                             CourseName char(25));
-CREATE TABLE RegisteredCourses( id INT AUTO_INCREMENT PRIMARY KEY,
-								SchoolCode int,
-							    DepartmentCode int, 
-								CourseCode int, 
-								CourseName char(25));
-CREATE TABLE Enrollments ( student_id INT,
-						   course_id INT,
-						   PRIMARY KEY (student_id, course_id),
-						   FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
-						   FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE);
-CREATE TABLE EngineeringMajors (
+-- Master course list
+CREATE TABLE CourseList(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    SchoolCode INT,
+    DepartmentCode INT, 
+    CourseCode INT, 
+    CourseName CHAR(25)
+);
+
+-- Users table with extended fields
+CREATE TABLE Users(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    StudentName CHAR(40) NOT NULL,
+    UserPassword CHAR(10) NOT NULL,
+    Major VARCHAR(100) NOT NULL,
+    CollegeYear VARCHAR(20) NOT NULL,
+    IsTransfer BOOLEAN NOT NULL
+);
+
+-- Past course history
+CREATE TABLE PastEnrollments(
+    SchoolCode INT,
+    DepartmentCode INT, 
+    CourseCode INT, 
+    CourseName CHAR(25),
+    student_id INT,
+    course_id INT,
+    Grade CHAR(3),
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE
+);
+
+-- Future planned courses
+CREATE TABLE PlannedCourses(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    SchoolCode INT,
+    DepartmentCode INT, 
+    CourseCode INT, 
+    CourseName CHAR(25)
+);
+
+-- Registered but not yet completed courses
+CREATE TABLE RegisteredCourses(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    SchoolCode INT,
+    DepartmentCode INT, 
+    CourseCode INT, 
+    CourseName CHAR(25)
+);
+
+-- Active course enrollments
+CREATE TABLE Enrollments(
+    student_id INT,
+    course_id INT,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES CourseList(id) ON DELETE CASCADE
+);
+
+-- Majors offered
+CREATE TABLE EngineeringMajors(
     id INT AUTO_INCREMENT PRIMARY KEY,
     MajorName VARCHAR(100) NOT NULL,
-    DegreeType VARCHAR(20) DEFAULT 'B.S.' 
+    DegreeType VARCHAR(20) DEFAULT 'B.S.'
 );
 
-INSERT INTO EngineeringMajors (MajorName)
-VALUES 
-('Aerospace Engineering'),
-('Biomedical Engineering'),
-('Chemical and Biochemical Engineering'),
-('Civil and Environmental Engineering'),
-('Electrical and Computer Engineering'),
-('Environmental Engineering'),
-('Industrial and Systems Engineering'),
-('Materials Science and Engineering'),
-('Mechanical Engineering'),
-('Packaging Engineering');
+-- Notes system
+CREATE TABLE Notes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    note_text TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    category VARCHAR(255),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE
+);
 
-CREATE TABLE AerospaceEngineeringRequirements (
+-- Notification system
+CREATE TABLE Notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    course_code VARCHAR(50),
+    subject_code VARCHAR(10),
+    semester VARCHAR(10),
+    notified BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+-- Personal calendar / planner
+CREATE TABLE CoursePlannerEvents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    eventName VARCHAR(255) NOT NULL,
+    eventDay VARCHAR(255) NOT NULL,
+    startTime TIME NOT NULL,
+    endTime TIME NOT NULL,
+    student_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+-- Requirement tables per major (denormalized approach)
+CREATE TABLE AerospaceEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -61,65 +107,7 @@ CREATE TABLE AerospaceEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Year - Fall', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R3', 'R3 : Sophomore Year - Fall', '{14:650:291}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R3', 'R3 : Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R3', 'R3 : Sophomore Year - Fall', '{14:650:210}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R3', 'R3 : Sophomore Year - Fall', '{14:440:222, 14:440:292, Alternative Engineering Mechanics: Dynamics Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R3', 'R3 : Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R3', 'R3 : Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R5', 'R5 : Junior Year - Fall', '{14:650:342}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R5', 'R5 : Junior Year - Fall', '{01:640:421}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R5', 'R5 : Junior Year - Fall', '{14:650:312}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R5', 'R5 : Junior Year - Fall', '{14:650:350}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R7', 'R7 : Senior Year - Fall', '{14:650:431}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R7', 'R7 : Senior Year - Fall', '{14:650:487}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R7', 'R7 : Senior Year - Fall', '{14:650:439}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R7', 'R7 : Senior Year - Fall', '{14:650:457}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R7', 'R7 : Senior Year - Fall', '{Aerospace Engineering Technical Electives (14:332:402)}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R7', 'R7 : Senior Year - Fall', '{14:650:465}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R9', 'R9 : Humanities/Social Science and General Electives', '{H/SS Electives Engineering (01:730:103, 01:830:101)}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R9', 'R9 : Humanities/Social Science and General Electives', '{Current Upper Level H/SS Electives Engineering (07:965:230, 01:830:321)}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R4', 'R4 : Sophomore Year - Spring', '{14:650:361, Alternative Elements of Electrical Engineering Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R4', 'R4 : Sophomore Year - Spring', '{14:650:388}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R4', 'R4 : Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R4', 'R4 : Sophomore Year - Spring', '{14:650:351}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R4', 'R4 : Sophomore Year - Spring', '{14:540:343}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R6', 'R6 : Junior Year - Spring', '{14:650:471}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R6', 'R6 : Junior Year - Spring', '{14:650:458}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R6', 'R6 : Junior Year - Spring', '{14:650:460}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R6', 'R6 : Junior Year - Spring', '{14:650:401}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R6', 'R6 : Junior Year - Spring', '{14:650:449}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R8', 'R8 : Senior Year - Spring', '{14:650:433}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R8', 'R8 : Senior Year - Spring', '{14:650:488}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R8', 'R8 : Senior Year - Spring', '{14:650:463}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R8', 'R8 : Senior Year - Spring', '{14:650:459}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R8', 'R8 : Senior Year - Spring', '{Aerospace Engineering Technical Electives (14:332:434)}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{01:160:159}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{01:160:171}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{01:355:101, 01:355:104}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{01:640:151}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{01:750:123}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{14:440:101}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R1', 'R1 : First Semester', '{Current H/SS Electives Engineering (01:220:102)}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : Second Semester', '{01:160:160}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : Second Semester', '{01:640:152}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : Second Semester', '{01:750:124}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : Second Semester', '{14:440:102}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : Second Semester', '{14:440:221}');
-INSERT INTO AerospaceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8362, 'Aerospace Engineering (NB)', 'R2', 'R2 : Second Semester', '{Current H/SS Electives Engineering (01:730:103)}');
-
-CREATE TABLE PackagingEngineeringRequirements (
+CREATE TABLE PackagingEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -128,48 +116,7 @@ CREATE TABLE PackagingEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:540:343}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:440:301}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:440:302}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:440:470}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:440:371}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R5', 'Junior Year - Fall', '{01:960:379, 01:960:384, 01:960:401}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:314, 14:635:407, 14:180:243, 14:650:291}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:440:373}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:440:419}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R7', 'Senior Year - Fall', '{ASE-Packaging Technical Electives (14:332:222)}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R9', 'Humanities and Social Sciences Electives', '{H/SS Electives Engineering (01:730:103, 01:830:101)}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R9', 'Humanities and Social Sciences Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{ASE-Packaging Electives}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:440:222}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{33:799:301}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:440:471}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:440:473}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:440:418}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R6', 'Junior Year - Spring', '{01:355:302}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R6', 'Junior Year - Spring', '{ASE-Packaging Electives}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:440:420}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:440:477}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R8', 'Senior Year - Spring', '{ASE-Packaging Electives}');
-INSERT INTO PackagingEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8363, 'Packaging Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:155:208, 14:635:206, 14:650:351, 01:160:209, 01:160:307, 14:635:361, 14:635:312}');
-
-
-CREATE TABLE BiomedicalEngineeringRequirements (
+CREATE TABLE BiomedicalEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -178,53 +125,7 @@ CREATE TABLE BiomedicalEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:125:201}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:119:115}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:125:308, 14:125:208}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:125:303}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:125:305}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:125:309}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:125:310}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R5', 'Junior Year - Fall', '{Biomedical Technical Electives F19 (14:332:222)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:125:401}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:125:421}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R7', 'Senior Year - Fall', '{Biomedical Departmental Electives}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Engineering General Electives (01:355:100)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:119:117}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:540:343}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:750:228, Alternate Physics IIB Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:750:230, Alternative Analytical Physics II Laboratory Courses}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:125:255, 14:125:355}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:125:306}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:125:315}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:125:304, 14:125:404}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R6', 'Junior Year - Spring', '{Biomedical Technical Electives F19 (14:332:221)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R6', 'Junior Year - Spring', '{Biomedical Technical Electives F19 (14:332:231)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R6', 'Junior Year - Spring', '{Biomedical Life Science Electives, Biomedical Technical Electives F19 (14:332:252)}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:125:402}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:125:422}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R8', 'Senior Year - Spring', '{Biomedical Departmental Electives}');
-INSERT INTO BiomedicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8621, 'Biomedical Engineering (NB)', 'R8', 'Senior Year - Spring', '{Biomedical Technical Electives F19 (14:332:402)}');
-
-
-CREATE TABLE ChemicalEngineeringRequirements (
+CREATE TABLE ChemicalEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -233,50 +134,7 @@ CREATE TABLE ChemicalEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:155:201}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:155:298}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:160:307, Alternate Organic Chemistry I Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R5', 'Junior Year - Fall', '{01:160:311, 01:160:309, 21:160:331}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R5', 'Junior Year - Fall', '{Chem/Biochem Technical Electives F19 (14:332:222)}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:155:303}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:155:307}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:155:309}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:155:411}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:155:415}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:155:422}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R7', 'Senior Year - Fall', '{Chem/Biochem Technical Electives F19 (14:332:221)}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Engineering General Electives (01:355:100, 01:640:356)}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R9', 'Humanities/Social Science Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:160:308, Alternate Organic Chemistry II Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:540:343}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:155:208}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:155:210}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:155:304}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:155:324}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:155:341}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:635:407}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:155:416}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:155:428}');
-INSERT INTO ChemicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8622, 'Chemical Engineering (NB)', 'R8', 'Senior Year - Spring', '{Chem/Biochem Technical Electives F19 (14:332:231)}');
-
-
-CREATE TABLE CivilEngineeringRequirements (
+CREATE TABLE CivilEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -285,54 +143,7 @@ CREATE TABLE CivilEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:440:222, 14:440:292, Alternative Engineering Mechanics: Dynamics Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:355:302, 01:355:322}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:305}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:318}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:387}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:389}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:407}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R5', 'Junior Year - Fall', '{01:960:379, 01:960:401}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:180:411}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:180:421}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:180:429}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:180:430}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:180:473}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R7', 'Senior Year - Fall', '{Civil Technical Electives F19 (14:332:231)}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Engineering General Electives (01:355:100)}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, Alternate Engineering Computing Courses, 14:440:102}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{Civil Science Electives}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:180:216}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:180:243}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:180:320}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:180:345}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:180:364}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:180:372}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:180:374}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:180:482}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R8', 'Senior Year - Spring', '{Civil Design Electives}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R8', 'Senior Year - Spring', '{Civil Departmental Electives}');
-INSERT INTO CivilEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8623, 'Civil Engineering (NB)', 'R8', 'Senior Year - Spring', '{Civil Technical Electives F19 (14:332:252)}');
-
-
-CREATE TABLE ElectricalComputerEngineeringComputerOptionRequirements (
+CREATE TABLE ElectricalComputerEngineeringComputerOptionRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -341,53 +152,7 @@ CREATE TABLE ElectricalComputerEngineeringComputerOptionRequirements (
     courses TEXT
 );
 
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R1', 'First Year - Fall', '{14:440:100, Alternate Engineering Orientation Lectures, 14:440:101}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:221}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:223}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:231}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:233}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{ECE Restricted Elective CE (14:332:361)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:331}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:333}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:345}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:351, 01:198:112}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{14:332:449}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{14:332:437}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{ECE Computer Elective F19 (14:332:402)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{ECE Math Science and Eng Electives (01:640:356)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R9', 'Humanities/Social Science requirement', '{H/SS Electives (01:220:102, 01:730:103)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R9', 'Humanities/Social Science requirement', '{Current Upper Level H/SS Electives Engineering (07:965:230, 01:830:321)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:222}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:224}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:226, 01:198:206, 01:640:477}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:252, 01:198:111}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{ECE Technical Electives CE F19 (01:640:250)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:434}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:312, Alternates Discrete Mathematics Courses (01:640:300)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:393}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:452}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{Engineering General Electives (01:355:100)}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{ECE Technical Electives CE F19}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{14:332:448}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{ECE Computer Elective F19}');
-INSERT INTO ElectricalComputerEngineeringComputerOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8624, 'Electrical & Computer Engineering - Computer Engineering Option (NB)', 'R10', 'ECE Residency - Required Credits', '{Courses Offered by the ECE Department (332) (14:332:221, 14:332:223, 14:332:231, 14:332:233, 14:332:252, 14:332:222, 14:332:224, 14:332:331, 14:332:333, 14:332:345, 14:332:351, 14:332:361, 14:332:434, 14:332:452, 14:332:437, 14:332:449, 14:332:402, 14:332:363)}');
-
-
-CREATE TABLE ElectricalComputerEngineeringElectricalOptionRequirements (
+CREATE TABLE ElectricalComputerEngineeringElectricalOptionRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -396,55 +161,7 @@ CREATE TABLE ElectricalComputerEngineeringElectricalOptionRequirements (
     courses TEXT
 );
 
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:221}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:223}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:231}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R3', 'Sophomore Year - Fall', '{14:332:233}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{ECE Restricted elective EE (14:332:351)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:331}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:333}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:345}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:361}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R5', 'Junior Year - Fall', '{14:332:363}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{14:332:449}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{ECE Electrical Elective F19 (14:332:402, 14:332:434)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{ECE Technical Electives - EE F19 (01:640:250)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R7', 'Senior Year - Fall', '{ECE Math Science and Eng Electives (01:640:356)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R9', 'Humanities/Social Science requirement', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R9', 'Humanities/Social Science requirement', '{Current Upper Level H/SS Electives Engineering (07:965:230, 01:830:321)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:222}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:224}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:226, 01:640:477, 01:198:206}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R4', 'Sophomore Year - Spring', '{14:332:252, 01:198:111}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:312, Alternates Discrete Mathematics Courses (01:640:300)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:346}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:348}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:366}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:368}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:332:393}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{14:332:448}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{Engineering General Electives (01:355:100)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{ECE Technical Electives - EE F19}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R8', 'Senior Year - Spring', '{ECE Electrical Elective F19 (14:332:437)}');
-INSERT INTO ElectricalComputerEngineeringElectricalOptionRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8625, 'Electrical & Computer Engineering - Electrical Engineering Option (NB)', 'R10', 'ECE Residency - Required Credits', '{Courses Offered by the ECE Department (332) (14:332:221, 14:332:223, 14:332:231, 14:332:233, 14:332:222, 14:332:224, 14:332:252, 14:332:331, 14:332:333, 14:332:345, 14:332:361, 14:332:363, 14:332:351, 14:332:402, 14:332:434, 14:332:449, 14:332:437, 14:332:452)}');
-
-
-CREATE TABLE EnvironmentalEngineeringRequirements (
+CREATE TABLE EnvironmentalEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -453,54 +170,7 @@ CREATE TABLE EnvironmentalEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:119:103, Alternate General Biology I Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:180:215}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:440:222, Alternative Engineering Mechanics: Dynamics Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:387, 14:650:312}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:389}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R5', 'Junior Year - Fall', '{01:160:211}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R5', 'Junior Year - Fall', '{11:375:201}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R5', 'Junior Year - Fall', '{11:375:202}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R5', 'Junior Year - Fall', '{11:375:303, 300+ level statistics (960) courses (01:640:477)}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R7', 'Senior Year - Fall', '{11:117:413}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R7', 'Senior Year - Fall', '{11:117:423}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R7', 'Senior Year - Fall', '{11:117:474}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R7', 'Senior Year - Fall', '{11:117:488}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R7', 'Senior Year - Fall', '{11:375:322}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R7', 'Senior Year - Fall', '{Environmental Engineering Elective}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Engineering General Electives (01:355:100)}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{11:117:333}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:160:209}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:180:243}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R6', 'Junior Year - Spring', '{11:117:462}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R6', 'Junior Year - Spring', '{11:117:323}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:650:351}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:180:448}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R8', 'Senior Year - Spring', '{Environmental Engineering Elective}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R8', 'Senior Year - Spring', '{11:117:414}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R8', 'Senior Year - Spring', '{11:117:424}');
-INSERT INTO EnvironmentalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8641, 'Environmental Engineering (NB)', 'R8', 'Senior Year - Spring', '{11:117:489}');
-
-
-CREATE TABLE IndustrialSystemsEngineeringRequirements (
+CREATE TABLE IndustrialSystemsEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -509,55 +179,7 @@ CREATE TABLE IndustrialSystemsEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:540:201}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:540:202}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:540:213}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{33:010:310}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:180:215, 14:650:215}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:332:221}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:540:338}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:540:382}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:540:383}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:407}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:540:320}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:540:400}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:540:433}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:540:434}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:540:453}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:540:487}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R9', 'Humanities and Social Sciences Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R9', 'Humanities and Social Sciences Electives', '{H/SS electives 200+ Engineering (07:965:230, 01:830:321)}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, 14:440:102, Alternate Engineering Computing Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{Industrial Engg List B Elective Fa19 (01:640:300)}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:540:210}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:440:222, Alternative Engineering Mechanics: Dynamics Courses}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:355:302}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:303}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:304}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:311}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:384}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:399}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:540:462}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R8', 'Senior Year - Spring', '{Industrial Eng List A Electives Fa19}');
-INSERT INTO IndustrialSystemsEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8642, 'Industrial Engineering (NB)', 'R8', 'Senior Year - Spring', '{Industrial Eng List B Elective Fa19 (01:640:250)}');
-
-
-CREATE TABLE MaterialsScienceEngineeringRequirements (
+CREATE TABLE MaterialsScienceEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -566,52 +188,7 @@ CREATE TABLE MaterialsScienceEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{Materials Science Statistics Courses - Sophomore Year}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:635:203}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:635:205}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:305}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:307}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:309}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:314}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:635:353}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R5', 'Junior Year - Fall', '{Materials Science Special Electives - Junior Year}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:635:402, 14:635:412}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R7', 'Senior Year - Fall', '{14:635:403}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R7', 'Senior Year - Fall', '{Technical Electives, Materials Science Engineering F19 (14:332:345), Materials Science Departmental Electives}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R7', 'Senior Year - Fall', '{Materials Science Departmental Electives, Technical Electives, Materials Science Engineering F19 (14:332:351)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R7', 'Senior Year - Fall', '{Materials Science Departmental Electives, Technical Electives, Materials Science Engineering F19 (14:332:361)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Current H/SS Electives Engineering (01:220:102, 01:730:103)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Current Upper Level H/SS Electives Engineering (01:830:321, 07:965:230)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R9', 'Humanities/Social Science and General Electives', '{Engineering General Electives (01:355:100)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:171, Alternate Chemistry Lab Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R2', 'First Year - Spring', '{01:160:160, Alternate Chemistry 2 Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R2', 'First Year - Spring', '{01:640:152, Alternate Calculus II Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R2', 'First Year - Spring', '{01:750:124, Alternate Physics IB Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:127, Alternate Engineering Computing Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R2', 'First Year - Spring', '{14:440:221, Alternate Engineering Mechanics: Statics Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{01:640:244, Alternate Differential Equations Courses}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:635:204}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:635:206}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:635:212}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R4', 'Sophomore Year - Spring', '{14:635:252}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:540:343}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:635:316}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:635:354}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R6', 'Junior Year - Spring', '{14:635:401, 14:635:411}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R6', 'Junior Year - Spring', '{Materials Science Special Electives - Junior Year, Technical Electives, Materials Science Engineering F19 (14:332:222)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R8', 'Senior Year - Spring', '{14:635:404}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R8', 'Senior Year - Spring', '{Materials Science Departmental Electives, Technical Electives, Materials Science Engineering F19 (14:332:331)}');
-INSERT INTO MaterialsScienceEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8643, 'Materials Science and Engineering (NB)', 'R8', 'Senior Year - Spring', '{Materials Science Departmental Electives, Technical Electives, Materials Science Engineering F19 (14:332:221)}');
-
-CREATE TABLE MechanicalEngineeringRequirements (
+CREATE TABLE MechanicalEngineeringRequirements(
     id INT AUTO_INCREMENT PRIMARY KEY,
     degreePoint INT,
     program VARCHAR(255),
@@ -620,17 +197,97 @@ CREATE TABLE MechanicalEngineeringRequirements (
     courses TEXT
 );
 
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R1', 'First Year - Fall', '{01:160:159, Alternate Chemistry 1 Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R1', 'First Year - Fall', '{01:355:101, Alternate English Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R1', 'First Year - Fall', '{01:640:151, Alternate Calculus I Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R1', 'First Year - Fall', '{01:750:123, Alternate Physics IA Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R1', 'First Year - Fall', '{14:440:100, 14:440:101, Alternate Engineering Orientation Lectures}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:650:215, 14:650:289}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:640:251, Alternate Calculus III Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:227, Alternate Physics II Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{01:750:229, Alternate Physics II Lab Courses}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:650:388}');
-INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R3', 'Sophomore Year - Fall', '{14:440:222, 14:440:292, Alternative Engineering Mechanics: Dynamics Courses}');
+
+
+
+CREATE TABLE AerospaceEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES AerospaceEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE PackagingEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES PackagingEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE BiomedicalEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES BiomedicalEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE ChemicalEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES ChemicalEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE CivilEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES CivilEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE ElectricalComputerEngineeringComputerOptionStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES ElectricalComputerEngineeringComputerOptionRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE ElectricalComputerEngineeringElectricalOptionStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES ElectricalComputerEngineeringElectricalOptionRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE EnvironmentalEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES EnvironmentalEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IndustrialSystemsEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES IndustrialSystemsEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MaterialsScienceEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES MaterialsScienceEngineeringRequirements(id) ON DELETE CASCADE
+);
+
+CREATE TABLE MechanicalEngineeringStudents (
+    student_id INT NOT NULL,
+    major_id INT NOT NULL,
+    PRIMARY KEY (student_id, major_id),
+    FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (major_id) REFERENCES MechanicalEngineeringRequirements(id) ON DELETE CASCADE
+);
+
 INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{01:640:421}');
 INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:650:351}');
 INSERT INTO MechanicalEngineeringRequirements (degreePoint, program, reqID, reqTitle, courses) VALUES (8644, 'Mechanical Engineering (NB)', 'R5', 'Junior Year - Fall', '{14:650:312}');

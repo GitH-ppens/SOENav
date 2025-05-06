@@ -10,7 +10,7 @@ db.connect(err => {
   if (err) return console.error("DB connection failed:", err);
   console.log("Connected to DB");
 });
-async function registerStudent({ name, email, password }) {
+async function registerStudent({ name, email, netID, password }) {
   if (!name || !email || ||!netID !password) {
     throw new Error('Missing required fields');
   }

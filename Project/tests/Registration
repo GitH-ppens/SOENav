@@ -1,0 +1,33 @@
+//imports
+
+const db = mysql.createConnection({
+  host: "bmu76n1mf2sehxodofjl-mysql.services.clever-cloud.com",
+  user: "udaban8ouzufgby5",
+  password: "xH67BYKcnsZq9J0vUVvO",
+  database: "bmu76n1mf2sehxodofjl",
+});
+db.connect(err => {
+  if (err) return console.error("DB connection failed:", err);
+  console.log("Connected to DB");
+});
+async function registerStudent({ name, email, password }) {
+  if (!name || !email || ||!netID !password) {
+    throw new Error('Missing required fields');
+  }
+
+  const [existingUser] = await db.execute(SELECT * FROM soenav_students WHERE email = ?", [email]);//We using email, not netID since unique
+  if (existingUser.length > 0) {
+    throw new Error('User already exists');
+  }
+
+  await db.execute(
+    INSERT INTO soenav_students
+      (name, email, netID, password, matricDate, expectedGradDate, currentSchoolYear, major, coursesTaken)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [name, email,netID, password, "2025", "2029", "Freshman", "Electrical Engineering", "[]"] //Courses taken is a json list...Should work
+  );
+
+  return { success: true, message: 'Registration successful' };
+}
+
+module.exports = { registerStudent };
